@@ -7,12 +7,8 @@
 //==================================================================================================
 #pragma once
 
-namespace eve::detail
-{
-  template<floating_real_value T>
-  EVE_FORCEINLINE constexpr auto conj_(EVE_SUPPORTS(cpu_)
-                                      , T const &a) noexcept
-  {
-    return a;
-  }
-}
+#include <eve/module/complex/traits.hpp>
+#include <eve/module/complex/regular/i.hpp>
+#include <eve/module/complex/regular/conj.hpp>
+#include <eve/module/complex/regular/real.hpp>
+#include <eve/module/complex/regular/imag.hpp>

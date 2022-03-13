@@ -61,11 +61,17 @@ namespace eve
   //!
   //! #### Example
   //!
-  //! @godbolt{doc/math/conj.cpp}
+  //! @godbolt{doc/complex/conj.cpp}
   //!
   //!  @}
   //================================================================================================
   EVE_MAKE_CALLABLE(conj_, conj);
-}
 
-#include <eve/module/math/regular/impl/conj.hpp>
+  namespace detail
+  {
+    template<value V> EVE_FORCEINLINE V conj_(EVE_SUPPORTS(cpu_), V v) noexcept
+    {
+      return v;
+    }
+  }
+}

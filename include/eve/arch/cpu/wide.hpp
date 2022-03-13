@@ -170,13 +170,19 @@ namespace eve
     template<typename S0, typename... Ss>
     explicit EVE_FORCEINLINE wide(S0 const& v0,Ss const&... vs) noexcept
 #if !defined(EVE_DOXYGEN_INVOKED)
-    requires kumi::sized_product_type<Type,sizeof...(Ss) + 1>
+    requires kumi::at_least_sized_product_type<Type,sizeof...(Ss) + 1>
 #endif
-            : storage_base( kumi::map ( []<typename W>(auto const& n, W const&) { return W{n}; }
-                                      , kumi::make_tuple(v0,vs...)
-                                      , *this
-                                      )
-                          )
+    : storage_base( [&]<std::size_t... X>( std::index_sequence<X...>)
+                    {
+                      constexpr auto o = sizeof...(X);
+                      // Generate a scalar default product type to fill in the blanks if needed
+                      Type d = {};
+                      return kumi::map ( []<typename W>(auto n, W const&) { return W{n}; }
+                                                      , kumi::make_tuple(v0,vs...,get<X+o>(d)...)
+                                                      , *this
+                                                    );
+                    }(std::make_index_sequence<kumi::size<Type>::value - (1 + sizeof...(Ss))>{})
+                  )
     {}
 
     //==============================================================================================
