@@ -90,6 +90,10 @@ namespace eve
       return Z{-real(z), -imag(z)};
     }
 
+    template<like<complex> Z> EVE_FORCEINLINE friend auto operator+(Z z) noexcept
+    {
+      return z;
+    }
 
     EVE_FORCEINLINE friend auto operator*= ( like<complex> auto& self
                                            , like<complex> auto const& other
@@ -99,7 +103,8 @@ namespace eve
       auto b = imag(self);
       auto c = real(other);
       auto d = imag(other);
-      return {fms(a,c,b*d), fma(a,d,b*c)};
+      self = {fms(a,c,b*d), fma(a,d,b*c)};
+      return self; 
     }
 
     EVE_FORCEINLINE friend auto operator*/ ( like<complex> auto& self
@@ -107,10 +112,18 @@ namespace eve
                                            ) noexcept
     {
       self *= conj(other);
-      self *= rec(abs(other));
+      self *= rec(sqr_abs(other));
       return self:
+//       auto rr =  eve::abs(real(self));
+//       auto ii =  eve::abs(imag(self));
+//       auto e =  -if_else((rr < ii), exponent(ii), exponent(rr));
+//       auto oother(eve::ldexp(other, e));
+//       auto denom =  sqr_abs(oother);
+//       result_t num = eve::multiplies(self, conj(oother));
+//       self =  ldexp(num*rec(denom), e);
+      return self;
     }
-
+    
     //==============================================================================================
     //  Unary functions
     //==============================================================================================
