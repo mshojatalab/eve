@@ -38,6 +38,7 @@
 #include <eve/module/core/regular/deinterleave_groups.hpp>
 #include <eve/module/core/regular/deinterleave_groups_shuffle.hpp>
 #include <eve/module/core/regular/derivative.hpp>
+#include <eve/module/core/regular/diff_of_prod.hpp>
 #include <eve/module/core/regular/firstbitset.hpp>
 #include <eve/module/core/regular/firstbitunset.hpp>
 #include <eve/module/core/regular/first_true.hpp>
@@ -200,6 +201,7 @@
 #include <eve/module/core/regular/sqr.hpp>
 #include <eve/module/core/regular/sqrt.hpp>
 #include <eve/module/core/regular/sub.hpp>
+#include <eve/module/core/regular/sum_of_prod.hpp>
 #include <eve/module/core/regular/trunc.hpp>
 #include <eve/module/core/regular/two_add.hpp>
 #include <eve/module/core/regular/two_prod.hpp>

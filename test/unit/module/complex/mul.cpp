@@ -29,16 +29,21 @@ EVE_TEST_TYPES( "Check complex::operator+", eve::test::scalar::ieee_reals)
 
   auto fill_r = [](auto e, auto) { return T(1+e); };
   auto fill_i = [](auto e, auto) { return T(1)/T(1+3*e); };
+  auto fill_r1 = [](auto e, auto) { return T(1-e/2); };
+  auto fill_i1 = [](auto e, auto) { return T(-1+3.5*e); };
 
   using w_t = eve::wide<T>;
   using cw_t = eve::wide<eve::complex<T>>;
   w_t wr(fill_r);
   w_t wi(fill_i);
+  w_t wr1(fill_r1);
+  w_t wi1(fill_i1);
 //   std::cout <<  "wr " << wr << std::endl;
 //   std::cout <<  "wi " << wi << std::endl;
 
   eve::wide<eve::complex<T>> z(wr, wi);
   eve::wide<eve::complex<T>> zbar(wr, -wi);
+  eve::wide<eve::complex<T>> z1(wr1, wi1);
   auto std_mul =  [](eve::complex<T> a,  eve::complex<T> b) -> eve::complex<T> {
     return std::complex<T>(eve::real(a), eve::imag(a))*std::complex<T>(eve::real(b), eve::imag(b));
   };
@@ -50,30 +55,12 @@ EVE_TEST_TYPES( "Check complex::operator+", eve::test::scalar::ieee_reals)
 
   TTS_EXPECT(eve::all(eve::is_equal(z*zbar, my_mul(z, zbar))));
   TTS_EXPECT(eve::all(eve::ulpdist( z*zbar, my_mul(z, zbar)) < 0.5));
-  std::cout << eve::ulpdist( z*zbar, my_mul(z, zbar)) << std::endl;
-  std::cout << z*zbar  << std::endl;
-  std::cout << my_mul(z, zbar) << std::endl;
-
-//   TTS_EQUAL( eve::real(z_v1*z_s2), w_t{[&](auto i, auto c) { return eve::real(fill(i,c)); } });
-//   TTS_EQUAL( eve::imag(z_v1*z_s2), w_t{[&](auto i, auto c) { return eve::imag(fill(i,c)); } });
-
-//   TTS_EQUAL( eve::real(z_v2*z_s1), w_t{[&](auto i, auto c) { return fill_i(i,c) * eve::real(z_s1); } });
-//   TTS_EQUAL( eve::imag(z_v2*z_s1), w_t{[&](auto i, auto c) { return fill_r(i,c) * eve::imag(z_s1); } });
-
-//   TTS_EQUAL( eve::real(z_v1*z_v2), w_t{[&](auto i, auto c) { return fill_r(i,c) * fill_i(i,c); } });
-//   TTS_EQUAL( eve::imag(z_v1*z_v2), w_t{[&](auto i, auto c) { return fill_i(i,c) * fill_r(i,c); } });
+  TTS_EXPECT(eve::all(eve::is_equal(z*z1,   my_mul(z, z1))));
+//  TTS_EXPECT(eve::all(eve::is_equal(z*w_t(2),  complex<w_t>(2)*z)));
+  z *= eve::wide<eve::complex<T>>(2);
+  std::cout << z << std::endl;
+  z *= eve::wide<T>(2);
+  std::cout << z << std::endl;
+//   auto zz =  z * eve::wide<T>(2);
+//  std::cout << zz << std::endl;
 };
-// EVE_TEST_TYPES( "Check complex::operator*", eve::test::scalar::ieee_reals)
-//   <typename T>(eve::as<T>)
-// {
-//   using w_t = eve::wide<T>;
-
-//   auto r0  = [](auto e, auto) -> eve::complex<T>{ return eve::complex<T>(T(1+e),T(e)); };
-//   auto r1  = [](auto e, auto) -> eve::complex<T>{ return eve::complex<T>(T(1),T(e)); };
-//   auto r2  = [](auto e, auto) -> eve::complex<T>{ return eve::complex<T>(T(1+e-e*e), T(2*e+e*e)) ; };
-//   auto m = r0*r1;
-
-//   TTS_EQUAL( eve::real(r2), eve::real(m));
-//   TTS_EQUAL( eve::imag(r2), eve::imag(m));
-
-// };

@@ -10,6 +10,7 @@
 #include <eve/concept/vectorizable.hpp>
 #include <eve/module/core.hpp>
 #include <eve/module/math.hpp>
+#include <eve/module/complex.hpp>
 #include <eve/product_type.hpp>
 #include <eve/detail/abi.hpp>
 #include <complex>
@@ -99,33 +100,60 @@ namespace eve
       return z;
     }
 
-    EVE_FORCEINLINE friend auto& operator*= ( like<complex> auto& self
-                                           , like<complex> auto const& other
-                                           ) noexcept
+    EVE_FORCEINLINE friend auto& operator*= ( like<complex> auto & self
+                                            , like<complex> auto const & other
+                                            ) noexcept
     {
       auto a = real(self);
       auto b = imag(self);
       auto c = real(other);
       auto d = imag(other);
-      self = {fms(a,c,b*d), fma(a,d,b*c)};
+      self = {diff_of_prod(a, c, b, d), sum_of_prod(a, d, b, c)};
+      // still need some limit values treatments for inf nan
       return self;
     }
 
-    EVE_FORCEINLINE friend auto operator/= ( like<complex> auto& self
+    template<like<complex> Z, floating_real_value O>
+    EVE_FORCEINLINE friend auto& operator *= ( Z & self
+                                            , O const & other
+                                            ) noexcept
+    {
+      auto a = real(self);
+      auto b = imag(self);
+      return self = Z{ a*other, b*other};
+    }
+
+    template<like<complex> Z>
+    EVE_FORCEINLINE friend auto operator/= ( Z & self
                                            , like<complex> auto const& other
                                            ) noexcept
     {
-      self *= conj(other);
-      self *= rec(sqr_abs(other));
+//       this can be a raw version
+//       auto co = conj(other);
+//       auto fact = sqr_abs(other);
+//       auto rr = real(co)/fact;
+//       auto ii = imag(co)/fact;
+//       return self *= Z(rr, ii);
+
+      auto rr =  eve::abs(real(self));
+      auto ii =  eve::abs(imag(self));
+      auto e =  -if_else((rr < ii), exponent(ii), exponent(rr));
+      auto oother(eve::ldexp(other, e));
+      auto denom =  sqr_abs(oother);
+      self *= conj(oother);
+      self /= denom;
+      self = ldexp(self, e);
       return self;
-//       auto rr =  eve::abs(real(self));
-//       auto ii =  eve::abs(imag(self));
-//       auto e =  -if_else((rr < ii), exponent(ii), exponent(rr));
-//       auto oother(eve::ldexp(other, e));
-//       auto denom =  sqr_abs(oother);
-//       result_t num = eve::multiplies(self, conj(oother));
-//       self =  ldexp(num*rec(denom), e);
-      return self;
+    }
+
+    template<like<complex> Z, floating_real_value O>
+    EVE_FORCEINLINE friend auto operator/= ( Z & self
+                                           , O const& other
+                                           ) noexcept
+    {
+      auto a = real(self);
+      auto b = imag(self);
+      return self = Z{ a/other, b/other};
     }
 
     //==============================================================================================
@@ -170,6 +198,14 @@ namespace eve
                      , eve::ulpdist(imag(z1), imag(z2)));
     }
 
+    template<like<complex> Z>
+    EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::ldexp_
+                                                , Z const& z1
+                                                , integral_value auto n
+                                                ) noexcept
+    {
+      return Z{ ldexp(real(z1), n), ldexp(imag(z1), n)};
+    }
   };
 
   //================================================================================================
