@@ -90,6 +90,27 @@ namespace eve
       return Z{-real(z), -imag(z)};
     }
 
+
+    EVE_FORCEINLINE friend auto operator*= ( like<complex> auto& self
+                                           , like<complex> auto const& other
+                                           ) noexcept
+    {
+      auto a = real(self);
+      auto b = imag(self);
+      auto c = real(other);
+      auto d = imag(other);
+      return {fms(a,c,b*d), fma(a,d,b*c)};
+    }
+
+    EVE_FORCEINLINE friend auto operator*/ ( like<complex> auto& self
+                                           , like<complex> auto const& other
+                                           ) noexcept
+    {
+      self *= conj(other);
+      self *= rec(abs(other));
+      return self:
+    }
+
     //==============================================================================================
     //  Unary functions
     //==============================================================================================
