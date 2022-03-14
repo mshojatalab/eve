@@ -12,6 +12,7 @@
 #include <eve/module/math.hpp>
 #include <eve/product_type.hpp>
 #include <eve/detail/abi.hpp>
+#include <complex>
 
 namespace eve
 {
@@ -39,6 +40,9 @@ namespace eve
 
     /// Default constructor
     EVE_FORCEINLINE complex(Type r = 0, Type i = 0)  noexcept : parent{r,i} {}
+
+    ///  constructor from std:complex
+    EVE_FORCEINLINE complex(std::complex<Type> c)  noexcept : parent{c.real(), c.imag()} {}
 
     //==============================================================================================
     friend std::ostream& operator<<(std::ostream& os, like<complex> auto const& z)
@@ -95,7 +99,7 @@ namespace eve
       return z;
     }
 
-    EVE_FORCEINLINE friend auto operator*= ( like<complex> auto& self
+    EVE_FORCEINLINE friend auto& operator*= ( like<complex> auto& self
                                            , like<complex> auto const& other
                                            ) noexcept
     {
@@ -104,16 +108,16 @@ namespace eve
       auto c = real(other);
       auto d = imag(other);
       self = {fms(a,c,b*d), fma(a,d,b*c)};
-      return self; 
+      return self;
     }
 
-    EVE_FORCEINLINE friend auto operator*/ ( like<complex> auto& self
+    EVE_FORCEINLINE friend auto operator/= ( like<complex> auto& self
                                            , like<complex> auto const& other
                                            ) noexcept
     {
       self *= conj(other);
       self *= rec(sqr_abs(other));
-      return self:
+      return self;
 //       auto rr =  eve::abs(real(self));
 //       auto ii =  eve::abs(imag(self));
 //       auto e =  -if_else((rr < ii), exponent(ii), exponent(rr));
@@ -123,7 +127,7 @@ namespace eve
 //       self =  ldexp(num*rec(denom), e);
       return self;
     }
-    
+
     //==============================================================================================
     //  Unary functions
     //==============================================================================================
@@ -131,7 +135,21 @@ namespace eve
                                                 , like<complex> auto const& z
                                                 ) noexcept
     {
-      return hypot(real(z), imag(z));
+      return eve::hypot(real(z), imag(z));
+    }
+
+    EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::sqr_abs_
+                                                , like<complex> auto const& z
+                                                ) noexcept
+    {
+      return eve::sqr(real(z))+eve::sqr(imag(z));
+    }
+
+    EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::arg_
+                                                , like<complex> auto const& z
+                                                ) noexcept
+    {
+      return eve::atan2(imag(z), real(z) );
     }
 
     template<like<complex> Z>
@@ -139,6 +157,19 @@ namespace eve
     {
       return Z{real(z), -imag(z)};
     }
+
+    //==============================================================================================
+    //  Binary functions
+    //==============================================================================================
+    EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::ulpdist_
+                                                , like<complex> auto const& z1
+                                                , like<complex> auto const& z2
+                                                ) noexcept
+    {
+      return eve::max( eve::ulpdist(real(z1), real(z2))
+                     , eve::ulpdist(imag(z1), imag(z2)));
+    }
+
   };
 
   //================================================================================================
