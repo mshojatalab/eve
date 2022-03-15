@@ -52,8 +52,4 @@ namespace eve
   template<typename T>
   struct as_logical<complex<T>> : as_logical_t<T>
   {};
-
-  template<typename T>
-  struct as_wide<complex<T>> : as_wide_t<complex<element_type_t<T>>>
-  {};
 }
