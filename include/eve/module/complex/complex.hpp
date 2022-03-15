@@ -223,7 +223,7 @@ namespace eve
       i = if_else(is_imag(z) || is_real(z), zero, i);
       auto res = Z(r, i);
       if (eve::none(is_not_finite(z))) return res;
-//      res = if_else(is_infinite(rz) && is_not_finite(iz)), Z(inf(as(rz), nan(as(rz))), res);
+      res = if_else(is_infinite(rz) && is_not_finite(iz)), Z(inf(as(rz), nan(as(rz))), res);
 //       res = if_else(is_nan(rz) && is_inf(iz)),             Z(nan(as(rz), nan(as(rz))), res);
       return res;
     }
