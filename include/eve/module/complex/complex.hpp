@@ -187,6 +187,52 @@ namespace eve
     }
 
     //==============================================================================================
+    // predicates
+    //==============================================================================================
+    template<like<complex> Z>
+    EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::is_imag_, Z const& z ) noexcept
+    {
+      return is_eqz(real(z));
+    }
+
+    template<like<complex> Z>
+    EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::is_real_, Z const& z ) noexcept
+    {
+      return is_eqz(imag(z));
+    }
+
+    template<like<complex> Z>
+    EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::is_not_finite_, Z const& z ) noexcept
+    {
+      return is_not_finite(imag(z)) || is_not_finite(real(z));
+    }
+
+    //==============================================================================================
+    // trigo
+    //==============================================================================================
+    template<like<complex> Z>
+    EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::cosh_, Z const& z ) noexcept {
+//      using v_t = typename Z::value_type;
+      auto rz = real(z);
+      auto iz = imag(z);
+      auto [s, c]   = sincos(iz);
+      auto [sh, ch] = sinhcosh(rz);
+
+      auto r = c*ch;
+      auto i = s*sh;
+      i = if_else(is_imag(z) || is_real(z), zero, i);
+      auto res = Z(r, i);
+      if (eve::none(is_not_finite(z))) return res;
+//      res = if_else(is_infinite(rz) && is_not_finite(iz)), Z(inf(as(rz), nan(as(rz))), res);
+//       res = if_else(is_nan(rz) && is_inf(iz)),             Z(nan(as(rz), nan(as(rz))), res);
+      return res;
+    }
+//     EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::cos_, Z const& z ) noexcept;
+//     EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::sinh_, Z const& z ) noexcept;
+//     EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::sin_, Z const& z ) noexcept;
+
+
+    //==============================================================================================
     //  Binary functions
     //==============================================================================================
     EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::ulpdist_
@@ -212,3 +258,5 @@ namespace eve
   //! @}
   //================================================================================================
 }
+
+//#include <eve/module/complex/regular/trigo.hpp>
