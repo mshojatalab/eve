@@ -4,6 +4,7 @@
 ##  SPDX-License-Identifier: MIT
 ##==================================================================================================
 
+make_unit( "doc.complex" add.cpp               )
 make_unit( "doc.complex" abs.cpp               )
 make_unit( "doc.complex" conj.cpp              )
 make_unit( "doc.complex" cos.cpp               )
@@ -25,4 +26,14 @@ make_unit( "doc.complex" mul.cpp               )
 make_unit( "doc.complex" mul_i.cpp             )
 make_unit( "doc.complex" mul_mi.cpp            )
 make_unit( "doc.complex" polar.cpp             )
+make_unit( "doc.complex" pow.cpp               )
+make_unit( "doc.complex" proj.cpp              )
 make_unit( "doc.complex" real.cpp              )
+make_unit( "doc.complex" rec.cpp               )
+make_unit( "doc.complex" sin.cpp               )
+make_unit( "doc.complex" sinh.cpp              )
+make_unit( "doc.complex" sqr.cpp               )
+make_unit( "doc.complex" sqrt.cpp              )
+make_unit( "doc.complex" sub.cpp               )
+make_unit( "doc.complex" tan.cpp               )
+make_unit( "doc.complex" tanh.cpp              )

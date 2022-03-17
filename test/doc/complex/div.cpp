@@ -23,7 +23,11 @@ int main()
             << "<- f2                    = " << f2 << '\n'
             << "-> div(f1, f2)           = " << eve::div(f1, f2) << '\n'
             << "-> pedantic(div)(f1, f2) = " << eve::pedantic(eve::div)(f1, f2) << '\n'
-            << "-> f1/f2                 = " << f1/f2  << '\n';
+            << "-> f1/f2                 = " << f1/f2  << '\n'
+            << "->  div(fr1, f2)         = " << eve::div(fr1, f2) << '\n'
+            << "->  div(f1, fr2)         = " << eve::div(f1, fr2) << '\n'
+//            << "->  fr1/f2               = " << fr1/f2 << '\n'
+            << "->  f1/fr2               = " << f1/fr2 << '\n';
 
   float  sf1r = -1.0f;
   float  sf1i =  3.0f;

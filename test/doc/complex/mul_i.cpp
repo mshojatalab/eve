@@ -16,7 +16,7 @@ int main()
   std::cout << "---- simd" << '\n'
             << "<- fr                   = " << fr << '\n'
             << "<- f                    = " << f << '\n'
-    //           << "-> mul_i(fr)            = " << eve::mul_i(fr) << '\n'
+            << "-> mul_i(fr)            = " << eve::mul_i(fr) << '\n'
             << "-> mul_i(f)             = " << eve::mul_i(f)  << '\n';
 
   float  sfr = -1.0f;

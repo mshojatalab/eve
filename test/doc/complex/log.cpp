@@ -17,7 +17,7 @@ int main()
             << "<- fr                   = " << fr << '\n'
             << "<- f                    = " << f << '\n'
             << "-> log(fr)              = " << eve::log(fr) << '\n'
-//            << "-> cmplx(log)(fr)       = " << eve::cmplx(eve::log)(fr) << '\n'
+            << "-> cmplx(log)(fr)       = " << eve::cmplx(eve::log)(fr) << '\n'
             << "-> log(f)               = " << eve::log(f)  << '\n';
 
   float  sfr = -1.0f;

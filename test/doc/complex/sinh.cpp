@@ -16,17 +16,15 @@ int main()
   std::cout << "---- simd" << '\n'
             << "<- fr                   = " << fr << '\n'
             << "<- f                    = " << f << '\n'
-            << "-> exp_i(fr)            = " << eve::exp_i(fr) << '\n'
-            << "-> exp_i(f)             = " << eve::exp_i(f)  << '\n';
+            << "-> sinh(fr)             = " << eve::sinh(fr) << '\n'
+            << "-> sinh(f)              = " << eve::sinh(f)  << '\n';
 
   float  sfr = -1.0f;
   float  sfi =  3.0f;
   c_t    sf{sfr, sfi};
 
   std::cout << "---- scalar" << '\n'
-            << "<- sfr                  = " << sfr << '\n'
-            << "-> exp_i(sfr)           = " << eve::exp_i(sfr) << '\n'
             << "<- sf                   = " << sf << '\n'
-            << "-> exp_i(sf)            = " << eve::exp_i(sf) << '\n';
+            << "-> sinh(sf)             = " << eve::sinh(sf) << '\n';
   return 0;
 }

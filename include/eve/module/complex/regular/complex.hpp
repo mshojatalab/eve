@@ -14,6 +14,10 @@
 #include <eve/module/complex/regular/exp_ipi.hpp>
 #include <eve/module/complex/regular/real.hpp>
 #include <eve/module/complex/regular/imag.hpp>
+#include <eve/module/complex/regular/log.hpp>
+#include <eve/module/complex/regular/log10.hpp>
 #include <eve/module/complex/regular/mul_i.hpp>
 #include <eve/module/complex/regular/mul_mi.hpp>
 #include <eve/module/complex/regular/polar.hpp>
+#include <eve/module/complex/regular/proj.hpp>
+#include <eve/module/complex/regular/sqrt.hpp>

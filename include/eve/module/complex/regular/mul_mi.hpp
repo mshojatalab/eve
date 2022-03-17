@@ -53,10 +53,19 @@ namespace eve
 
   namespace detail
   {
-    template<floating_value V> EVE_FORCEINLINE eve::complex<V> mul_mi_(EVE_SUPPORTS(cpu_), V v) noexcept
+    template<floating_value V> EVE_FORCEINLINE auto mul_mi_(EVE_SUPPORTS(cpu_), V v) noexcept
     {
-      using c_t = eve::complex<V>;
-      return c_t{zero(as(v)), -v};
+     if constexpr(scalar_value<V>)
+      {
+        using c_t = eve::complex < V>;
+        return c_t{zero(as(v)), -v};
+      }
+      else
+      {
+        using elt_t = element_type_t<V>;
+        using c_t = eve::wide<eve::complex<elt_t>, eve::cardinal_t<V>>;
+        return c_t{zero(as(v)), -v};
+      }
     }
   }
 }

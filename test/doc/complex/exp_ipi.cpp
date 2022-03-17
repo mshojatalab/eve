@@ -16,7 +16,7 @@ int main()
   std::cout << "---- simd" << '\n'
             << "<- fr                   = " << fr << '\n'
             << "<- f                    = " << f << '\n'
-    //           << "-> exp_ipi(fr)          = " << eve::exp_ipi(fr) << '\n'
+            << "-> exp_ipi(fr)          = " << eve::exp_ipi(fr) << '\n'
             << "-> exp_ipi(f)           = " << eve::exp_ipi(f)  << '\n';
 
   float  sfr = -1.0f;
