@@ -14,9 +14,9 @@ namespace eve
   //================================================================================================
   //! @addtogroup complex
   //! @{
-  //! @var imag
+  //! @var real
   //!
-  //! @brief Callable object computing imaginary part of values.
+  //! @brief Callable object computing real part of values.
   //!
   //! **Required header:** `#include <eve/module/complex.hpp>`
   //!
@@ -24,7 +24,7 @@ namespace eve
   //!
   //! | Member       | Effect                                                     |
   //! |:-------------|:-----------------------------------------------------------|
-  //! | `operator()` | the  computation of imaginary part                         |
+  //! | `operator()` | the computation of real part                               |
   //!
   //! ---
   //!
@@ -37,11 +37,11 @@ namespace eve
   //!`x`:   [value](@ref eve::value).
   //!
   //! **Return value**
-  //! 0 if `x` is real or the imaginary part of `x` if x is an instance of eve::complex.
+  //! `x` itself if `x` is real or the real part of `x` if x is an instance of eve::complex.
   //!
   //! #### Example
   //!
-  //! @godbolt{doc/complex/imag.cpp}
+  //! @godbolt{doc/complex/real.cpp}
   //!
   //!  @}
   //================================================================================================
@@ -53,9 +53,9 @@ namespace eve
 
   namespace detail
   {
-    template<floating_real_value V> EVE_FORCEINLINE V real_(EVE_SUPPORTS(cpu_), V) noexcept
+    template<value V> EVE_FORCEINLINE decltype(auto) real_(EVE_SUPPORTS(cpu_), V&& v) noexcept
     {
-      return V(0);
+      return EVE_FWD(v);
     }
   }
 }

@@ -9,15 +9,15 @@ using c_t     = eve::complex<float>;
 
 int main()
 {
-  wide_ft fr = {-1.0f, 2.0f, -3.0f, -32768.0f};
-  wide_ft fi = { 1.0f, 0.0f, -3.5f,  32.0f   };
+  wide_ft fr = {-1.0f, 2.0f, -3.0f,  0.0f};
+  wide_ft fi = { 0.0f, 2.0f,  2.0f, -3.5f};
   wide_ct f{fr, fi};
 
   std::cout << "---- simd" << '\n'
             << "<- fr                   = " << fr << '\n'
             << "<- f                    = " << f << '\n'
-            << "-> conj(fr)             = " << eve::conj(fr) << '\n'
-            << "-> conj(f)              = " << eve::conj(f)  << '\n';
+            << "-> real(fr)             = " << eve::real(fr) << '\n'
+            << "-> real(f)              = " << eve::real(f)  << '\n';
 
   float  sfr = -1.0f;
   float  sfi =  3.0f;
@@ -25,6 +25,6 @@ int main()
 
   std::cout << "---- scalar" << '\n'
             << "<- sf                   = " << sf << '\n'
-            << "-> conj(sf)             = " << eve::conj(sf) << '\n';
+            << "-> real(sf)             = " << eve::real(sf) << '\n';
   return 0;
 }

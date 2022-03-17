@@ -12,50 +12,58 @@
 namespace eve
 {
   //================================================================================================
-  //! @addtogroup complex
+  //! @addtogroup math
   //! @{
-  //! @var imag
+  //! @var polar
   //!
-  //! @brief Callable object computing imaginary part of values.
+  //! @brief Callable object computing the polarugate value.
   //!
-  //! **Required header:** `#include <eve/module/complex.hpp>`
+  //! **Required header:** `#include <eve/module/math.hpp>`
   //!
   //! #### Members Functions
   //!
   //! | Member       | Effect                                                     |
   //! |:-------------|:-----------------------------------------------------------|
-  //! | `operator()` | the  computation of imaginary part                         |
+  //! | `operator()` | the computation of a complex from a module argument pair   |
   //!
   //! ---
   //!
   //!  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
-  //!  auto operator()(value auto x) const noexcept;
+  //!  auto operator()(floating_value auto rho, auto theta) const noexcept;
   //!  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   //!
   //! **Parameters**
   //!
-  //!`x`:   [value](@ref eve::value).
+  //!`rho`:  the modulus of the complex
+  //!`theta` the argument in radian of the complex
   //!
   //! **Return value**
-  //! 0 if `x` is real or the imaginary part of `x` if x is an instance of eve::complex.
+  //!
+  //! the complex value
+  //!
+  //! ---
   //!
   //! #### Example
   //!
-  //! @godbolt{doc/complex/imag.cpp}
+  //! @godbolt{doc/complex/polar.cpp}
   //!
   //!  @}
   //================================================================================================
-
-  namespace tag { struct real_; }
-  template<> struct supports_conditional<tag::real_> : std::false_type {};
-
-  EVE_MAKE_CALLABLE(real_, real);
+  EVE_MAKE_CALLABLE(polar_, polar);
 
   namespace detail
   {
-    template<floating_real_value V> EVE_FORCEINLINE V real_(EVE_SUPPORTS(cpu_), V) noexcept
+    template<floating_value V,  floating_value U> EVE_FORCEINLINE auto polar_(EVE_SUPPORTS(cpu_), V rho, U theta) noexcept
     {
-      return V(0);
+      return arithmetic_call(polar, rho, theta);
+    }
+
+    template<floating_value U> EVE_FORCEINLINE auto polar_(EVE_SUPPORTS(cpu_), U rho, U theta) noexcept
+    {
+      using elt_t = element_type_t<U>;
+      using c_t = eve::wide<eve::complex<elt_t>, eve::cardinal_t<U>>;
+      auto [s, c] = sincos(theta);
+      return c_t{rho*c, rho*s};
     }
   }
 }

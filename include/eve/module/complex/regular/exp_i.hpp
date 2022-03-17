@@ -8,15 +8,16 @@
 #pragma once
 
 #include <eve/detail/overload.hpp>
+#include <eve/module/math.hpp>
 
 namespace eve
 {
   //================================================================================================
   //! @addtogroup complex
   //! @{
-  //! @var imag
+  //! @var exp_i
   //!
-  //! @brief Callable object computing imaginary part of values.
+  //! @brief Callable object computing exp_i(x).
   //!
   //! **Required header:** `#include <eve/module/complex.hpp>`
   //!
@@ -24,7 +25,7 @@ namespace eve
   //!
   //! | Member       | Effect                                                     |
   //! |:-------------|:-----------------------------------------------------------|
-  //! | `operator()` | the  computation of imaginary part                         |
+  //! | `operator()` | the computation of exp_i(x)                                |
   //!
   //! ---
   //!
@@ -37,25 +38,27 @@ namespace eve
   //!`x`:   [value](@ref eve::value).
   //!
   //! **Return value**
-  //! 0 if `x` is real or the imaginary part of `x` if x is an instance of eve::complex.
+  //! `complex < decltype(x)> equal to exp(i*x) (i*i = -1).
   //!
   //! #### Example
   //!
-  //! @godbolt{doc/complex/imag.cpp}
+  //! @godbolt{doc/complex/exp_i.cpp}
   //!
   //!  @}
   //================================================================================================
 
-  namespace tag { struct real_; }
-  template<> struct supports_conditional<tag::real_> : std::false_type {};
+  namespace tag { struct exp_i_; }
+  template<> struct supports_conditional<tag::exp_i_> : std::false_type {};
 
-  EVE_MAKE_CALLABLE(real_, real);
+  EVE_MAKE_CALLABLE(exp_i_, exp_i);
 
   namespace detail
   {
-    template<floating_real_value V> EVE_FORCEINLINE V real_(EVE_SUPPORTS(cpu_), V) noexcept
+    template<floating_value V> EVE_FORCEINLINE auto exp_i_(EVE_SUPPORTS(cpu_), V v) noexcept
     {
-      return V(0);
+      using c_t = eve::complex<V>;
+      auto [s, c] = sincos(v);
+      return c_t{c, s};
     }
   }
 }

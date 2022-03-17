@@ -14,9 +14,9 @@ namespace eve
   //================================================================================================
   //! @addtogroup complex
   //! @{
-  //! @var imag
+  //! @var mul_mi
   //!
-  //! @brief Callable object computing imaginary part of values.
+  //! @brief Callable object computing mul_mi part of values.
   //!
   //! **Required header:** `#include <eve/module/complex.hpp>`
   //!
@@ -24,7 +24,7 @@ namespace eve
   //!
   //! | Member       | Effect                                                     |
   //! |:-------------|:-----------------------------------------------------------|
-  //! | `operator()` | the  computation of imaginary part                         |
+  //! | `operator()` | the computation of mul_mi part                               |
   //!
   //! ---
   //!
@@ -37,25 +37,26 @@ namespace eve
   //!`x`:   [value](@ref eve::value).
   //!
   //! **Return value**
-  //! 0 if `x` is real or the imaginary part of `x` if x is an instance of eve::complex.
+  //! `complex < decltype(x)> equal to x multiplied by -i (i*i = -1).
   //!
   //! #### Example
   //!
-  //! @godbolt{doc/complex/imag.cpp}
+  //! @godbolt{doc/complex/mul_mi.cpp}
   //!
   //!  @}
   //================================================================================================
 
-  namespace tag { struct real_; }
-  template<> struct supports_conditional<tag::real_> : std::false_type {};
+  namespace tag { struct mul_mi_; }
+  template<> struct supports_conditional<tag::mul_mi_> : std::false_type {};
 
-  EVE_MAKE_CALLABLE(real_, real);
+  EVE_MAKE_CALLABLE(mul_mi_, mul_mi);
 
   namespace detail
   {
-    template<floating_real_value V> EVE_FORCEINLINE V real_(EVE_SUPPORTS(cpu_), V) noexcept
+    template<floating_value V> EVE_FORCEINLINE eve::complex<V> mul_mi_(EVE_SUPPORTS(cpu_), V v) noexcept
     {
-      return V(0);
+      using c_t = eve::complex<V>;
+      return c_t{zero(as(v)), -v};
     }
   }
 }

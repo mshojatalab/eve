@@ -14,9 +14,9 @@ namespace eve
   //================================================================================================
   //! @addtogroup complex
   //! @{
-  //! @var real
+  //! @var imag
   //!
-  //! @brief Callable object computing real part of values.
+  //! @brief Callable object computing imaginary part of values.
   //!
   //! **Required header:** `#include <eve/module/complex.hpp>`
   //!
@@ -24,7 +24,7 @@ namespace eve
   //!
   //! | Member       | Effect                                                     |
   //! |:-------------|:-----------------------------------------------------------|
-  //! | `operator()` | the computation of real part                               |
+  //! | `operator()` | the  computation of imaginary part                         |
   //!
   //! ---
   //!
@@ -37,25 +37,25 @@ namespace eve
   //!`x`:   [value](@ref eve::value).
   //!
   //! **Return value**
-  //! `x` itself if `x` is real or the real part of `x` if x is an instance of eve::complex.
+  //! 0 if `x` is real or the imaginary part of `x` if x is an instance of eve::complex.
   //!
   //! #### Example
   //!
-  //! @godbolt{doc/complex/real.cpp}
+  //! @godbolt{doc/complex/imag.cpp}
   //!
   //!  @}
   //================================================================================================
 
-  namespace tag { struct real_; }
-  template<> struct supports_conditional<tag::real_> : std::false_type {};
+  namespace tag { struct imag_; }
+  template<> struct supports_conditional<tag::imag_> : std::false_type {};
 
-  EVE_MAKE_CALLABLE(real_, real);
+  EVE_MAKE_CALLABLE(imag_, imag);
 
   namespace detail
   {
-    template<value V> EVE_FORCEINLINE decltype(auto) real_(EVE_SUPPORTS(cpu_), V&& v) noexcept
+    template<floating_real_value V> EVE_FORCEINLINE V imag_(EVE_SUPPORTS(cpu_), V v) noexcept
     {
-      return EVE_FWD(v);
+      return v;
     }
   }
 }
