@@ -5,23 +5,23 @@
   SPDX-License-Identifier: MIT
 */
 //==================================================================================================
-#pragma once
+// #pragma once
 
-#include <eve/detail/overload.hpp>
-#include <eve/module/core.hpp>
+// #include <eve/detail/overload.hpp>
+// #include <eve/module/core.hpp>
 
-namespace eve
-{
-  template<floating_scalar_value Type> struct complex;
+// namespace eve
+// {
+//   template<floating_scalar_value Type> struct complex;
 
-  namespace detail
-  {
-    template<floating_real_value V>
-    EVE_FORCEINLINE auto div_(EVE_SUPPORTS(cpu_)
-                             ,V v
-                             , like<complex> auto const & a) noexcept
-    {
-      return mul(rec(a), v);
-    }
-  }
-}
+//   namespace detail
+//   {
+//     template<floating_real_value V>
+//     EVE_FORCEINLINE auto div_(EVE_SUPPORTS(cpu_)
+//                              ,V v
+//                              , like<complex> auto const & a) noexcept
+//     {
+//       return mul(rec(a), v);
+//     }
+//   }
+// }

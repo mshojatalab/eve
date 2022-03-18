@@ -12,50 +12,55 @@
 namespace eve
 {
   //================================================================================================
-  //! @addtogroup complex
+  //! @addtogroup core
   //! @{
-  //! @var real
+  //! @var reldist
   //!
-  //! @brief Callable object computing real part of values.
+  //! @brief Callable object computing the reldistt operation.
   //!
-  //! **Required header:** `#include <eve/module/complex.hpp>`
+  //! **Required header:** `#include <eve/module/core.hpp>`
   //!
   //! #### Members Functions
   //!
   //! | Member       | Effect                                                     |
   //! |:-------------|:-----------------------------------------------------------|
-  //! | `operator()` | the computation of real part                               |
+  //! | `operator()` | the reldistt operation   |
   //!
   //! ---
   //!
   //!  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
-  //!  auto operator()(value auto x) const noexcept;
+  //!  template< value T, value U > auto operator()( T x, U y ) const noexcept requires compatible< T, U >;
   //!  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   //!
   //! **Parameters**
   //!
-  //!`x`:   [value](@ref eve::value).
+  //!`x`, `y`:   [values](@ref eve::value).
   //!
   //! **Return value**
-  //! `x` itself if `x` is real or the real part of `x` if x is an instance of eve::complex.
+  //!
+  //!computes [elementwise](@ref glossary_elementwise) the 'units in the last place' distance betwween `x` and `y`.
+  //!This is semantically equivalent to:`
+  //!
+  //!* if is_ordered(x,y), nb_values(x,y)/2.0 is returned
+  //!* otherwise a `Nan` is returned
+  //!
+  //! ---
+  //!
+  //! #### Supported decorators
+  //!
+  //!  no decorators are supported
   //!
   //! #### Example
   //!
-  //! @godbolt{doc/complex/real.cpp}
+  //! @godbolt{doc/core/reldist.cpp}
   //!
   //!  @}
   //================================================================================================
 
-  namespace tag { struct real_; }
-  template<> struct supports_conditional<tag::real_> : std::false_type {};
+  namespace tag { struct reldist_; }
+  template<> struct supports_conditional<tag::reldist_> : std::false_type {};
 
-  EVE_MAKE_CALLABLE(real_, real);
-
-  namespace detail
-  {
-    template<value V> EVE_FORCEINLINE decltype(auto) real_(EVE_SUPPORTS(cpu_), V&& v) noexcept
-    {
-      return EVE_FWD(v);
-    }
-  }
+  EVE_MAKE_CALLABLE(reldist_, reldist);
 }
+
+#include <eve/module/core/regular/impl/reldist.hpp>

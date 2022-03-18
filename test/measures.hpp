@@ -10,6 +10,7 @@
 #include <eve/wide.hpp>
 #include <eve/arch/top_bits.hpp>
 #include <eve/module/core.hpp>
+#include <eve/module/complex.hpp>
 
 namespace eve
 {
@@ -48,7 +49,6 @@ namespace tts
   template<typename T, typename N>
   inline double ulp_distance(eve::wide<T, N> const &l, eve::wide<T, N> const &r)
   {
-    std::cout << "icitte" << std::endl;
     double max_ulp = 0;
     for(auto i = 0; i < l.size(); ++i)
       max_ulp = std::max(max_ulp, tts::ulp_distance(T(l.get(i)), T(r.get(i))));
@@ -93,4 +93,67 @@ namespace tts
   {
     return eve::compare_equal(l,r) ? 0. : 1;
   }
+}
+
+
+namespace eve
+{
+  template<typename T, typename N>
+  inline bool compare_equal(wide<eve::complex<T>, N> const &l, wide<eve::complex<T>, N> const &r)
+  {
+    return eve::all(l == r);
+  }
+
+//   template<typename T>
+//   inline bool compare_equal(logical<T> const &l, logical<T> const &r)
+//   {
+//     if constexpr(eve::simd_value<T>)  return l.bitmap() == r.bitmap();
+//     else                              return l == r;
+//   }
+
+//   template<typename T>
+//   inline std::string to_string(logical<T> const &l)
+//   {
+//     std::ostringstream str;
+//     str << l;
+//     return str.str();
+//   }
+
+//   template<typename T>
+//   inline std::string to_string(top_bits<T> const &l)
+//   {
+//     std::ostringstream str;
+//     str << l;
+//     return str.str();
+//   }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//==  complex
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+namespace tts
+{
+  template<typename T, typename N>
+  inline double ulp_distance(eve::wide<eve::complex<T>, N> const &l, eve::wide<eve::complex<T>, N> const &r)
+  {
+    std::cout << "icitte ulp" << std::endl;
+    return eve::maximum(eve::ulpdist(l, r));
+  }
+
+//   template<typename T, typename N>
+//   inline double relative_distance(eve::wide<eve::complex<T>, N> const &l, eve::wide<eve::complex<T>, N> const &r)
+//   {
+//     std::cout << "icitte rel" << std::endl;
+//     return eve::maximum(eve::reldist(l, r));
+//   }
+
+
+  template<typename T, typename N>
+  inline double absolute_distance(eve::wide<eve::complex<T>, N> const &l, eve::wide<eve::complex<T>, N> const &r)
+  {
+    std::cout << "icitte abs" << std::endl;
+    return eve::maximum(eve::dist(l, r));
+  }
+
 }

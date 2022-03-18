@@ -14,8 +14,8 @@ EVE_TEST_TYPES( "Check complex::operator+", eve::test::scalar::ieee_reals)
 {
   using w_t = eve::wide<T>;
 
-  std::complex<T>             c_s1(T{1}, T{5}), c_s2(T{2}, T{1}),  c_m(T{1.4}, T{1.8});
-  eve::complex<T>             z_s1(c_s1), z_s2(c_s2), z_m(c_m);
+  std::complex<T> c_s1(T{1}, T{5}), c_s2(T{2}, T{1}),  c_m(T{1.4}, T{1.8});
+  eve::complex<T> z_s1(c_s1), z_s2(c_s2), z_m(c_m);
   TTS_EQUAL(std::real(c_s1/c_s2), std::real(c_m));
   TTS_EQUAL(std::imag(c_s1/c_s2), std::imag(c_m));
 

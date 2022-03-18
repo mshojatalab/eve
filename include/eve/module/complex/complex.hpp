@@ -49,7 +49,7 @@ namespace eve
     //==============================================================================================
     friend std::ostream& operator<<(std::ostream& os, like<complex> auto const& z)
     {
-      return os << real(z) << std::showpos << imag(z) << "i" << std::noshowpos;
+      return os << std::setprecision(10) << real(z) << std::showpos << imag(z) << "i" << std::noshowpos;
     }
 
     //==============================================================================================
@@ -75,6 +75,27 @@ namespace eve
     //==============================================================================================
 
     template<like<complex> Z>
+    EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::is_equal_
+                                               , Z const& z1
+                                               , Z const& z2) noexcept
+    {
+      auto [z1r, z1i] = z1;
+      auto [z2r, z2i] = z2;
+      return is_equal(z1r, z2r) && is_equal(z1i, z2i);
+    }
+
+    template<like<complex> Z>
+    EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::is_equal_
+                                               , numeric_type const &
+                                               , Z const& z1
+                                               , Z const& z2) noexcept
+    {
+      auto [z1r, z1i] = z1;
+      auto [z2r, z2i] = z2;
+      return numeric(is_equal)(z1r, z2r) && numeric(is_equal)(z1i, z2i);
+    }
+
+   template<like<complex> Z>
     EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::is_imag_, Z const& z ) noexcept
     {
       return is_eqz(real(z));
@@ -615,24 +636,6 @@ namespace eve
       return Z{log(absz), argz};
     }
 
-    template<floating_real_value V>
-    EVE_FORCEINLINE friend auto tagged_dispatch(eve::tag::log_,
-                                                cmplx_type const &,
-                                                V v) noexcept
-    {
-      if constexpr(scalar_value<V>)
-      {
-        using c_t = complex<decltype(v)>;
-        return c_t{log_abs(v), arg(v)};
-      }
-      else
-      {
-        using elt_t = element_type_t<V>;
-        using c_t = eve::wide<eve::complex<elt_t>, eve::cardinal_t<V>>;
-        return c_t{zero(as(v)), v};
-      }
-    }
-
     template<like<complex> Z>
     EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::log10_, Z const& z ) noexcept
     {
@@ -678,18 +681,18 @@ namespace eve
     //==============================================================================================
     //  Binary functions
     //==============================================================================================
-    EVE_FORCEINLINE friend auto& operator == ( like<complex> auto const & a
+    EVE_FORCEINLINE friend auto operator == ( like<complex> auto const & a
                                              , like<complex> auto const & b
                                             ) noexcept
     {
       return (real(a) == real(b)) &&  (imag(a) == imag(b));
     }
 
-    EVE_FORCEINLINE friend auto& operator != ( like<complex> auto const & a
+    EVE_FORCEINLINE friend auto operator != ( like<complex> auto const & a
                                              , like<complex> auto const & b
                                             ) noexcept
     {
-      return (real(a) =! real(b)) || (imag(a) != imag(b));
+      return (real(a) != real(b)) || (imag(a) != imag(b));
     }
 
     EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::ulpdist_

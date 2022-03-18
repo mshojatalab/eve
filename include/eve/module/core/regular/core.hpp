@@ -57,6 +57,7 @@
 #include <eve/module/core/regular/popcount.hpp>
 #include <eve/module/core/regular/read.hpp>
 #include <eve/module/core/regular/reduce.hpp>
+#include <eve/module/core/regular/reldist.hpp>
 #include <eve/module/core/regular/replace.hpp>
 #include <eve/module/core/regular/reverse.hpp>
 #include <eve/module/core/regular/safe.hpp>

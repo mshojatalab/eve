@@ -7,7 +7,8 @@
 //==================================================================================================
 #pragma once
 
-#include <eve/module/complex/traits.hpp>
+#include <eve/module/complex/regular/cmplx.hpp>
+#include <eve/module/complex/regular/traits.hpp>
 #include <eve/module/complex/regular/i.hpp>
 #include <eve/module/complex/regular/conj.hpp>
 #include <eve/module/complex/regular/exp_i.hpp>
