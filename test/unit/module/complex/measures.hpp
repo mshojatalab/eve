@@ -59,21 +59,18 @@ namespace tts
   template<typename T, typename N>
   inline double ulp_distance(eve::wide<eve::complex<T>, N> const &l, eve::wide<eve::complex<T>, N> const &r)
   {
-    std::cout << "icitte ulp" << std::endl;
     return eve::maximum(eve::ulpdist(l, r));
   }
 
   template<typename T, typename N>
   inline double relative_distance(eve::wide<eve::complex<T>, N> const &l, eve::wide<eve::complex<T>, N> const &r)
   {
-    std::cout << "icitte rel" << std::endl;
     return eve::maximum(eve::reldist(l, r));
   }
 
   template<typename T, typename N>
   inline double absolute_distance(eve::wide<eve::complex<T>, N> const &l, eve::wide<eve::complex<T>, N> const &r)
   {
-    std::cout << "icitte abs" << std::endl;
     return eve::maximum(eve::dist(l, r));
   }
 
@@ -81,25 +78,22 @@ namespace tts
   //==  scalar
   /////////////
 
-  template<typename T, typename N>
+  template<typename T>
   inline double ulp_distance(eve::complex<T> const &l, eve::complex<T> const &r)
   {
-    std::cout << "icitte s ulp" << std::endl;
     return eve::maximum(eve::ulpdist(l, r));
   }
 
-  template<typename T, typename N>
+  template<typename T>
   inline double relative_distance(eve::complex<T> const &l, eve::complex<T> const &r)
   {
-    std::cout << "icitte s rel" << std::endl;
     return eve::maximum(eve::reldist(l, r));
   }
 
 
-  template<typename T, typename N>
+  template<typename T>
   inline double absolute_distance(eve::complex<T> const &l, eve::complex<T> const &r)
   {
-    std::cout << "icitte s abs" << std::endl;
     return eve::maximum(eve::dist(l, r));
   }
 
