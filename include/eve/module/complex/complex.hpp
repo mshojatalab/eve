@@ -15,6 +15,7 @@
 #include <eve/detail/abi.hpp>
 #include <complex>
 #include <iostream>
+#include <iomanip>
 
 namespace eve
 {
@@ -702,6 +703,16 @@ namespace eve
     {
       return eve::max( eve::ulpdist(real(z1), real(z2))
                      , eve::ulpdist(imag(z1), imag(z2)));
+    }
+
+    template < typename T >
+    EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::ulpdist_
+                                                , like<complex> auto const& z1
+                                                , std::complex<T> const& z2
+                                                ) noexcept
+    {
+      return eve::max( eve::ulpdist(real(z1), z2.real())
+                     , eve::ulpdist(imag(z1), z2.imag()));
     }
 
     template<like<complex> Z>

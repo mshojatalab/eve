@@ -6,6 +6,7 @@
 **/
 //==================================================================================================
 #include "test.hpp"
+#include "measures.hpp"
 #include <eve/module/complex.hpp>
 
 EVE_TEST( "Check behavior of conj on scalar"
