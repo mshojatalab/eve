@@ -575,10 +575,10 @@ namespace eve
     EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::sinh_, pedantic_type const &, Z const& z ) noexcept
     {
       auto [r, i] = sinh(z);
-      if (none(is_invalid(z))) return Z{r, i};
+      if (none(is_not_finite(z))) return Z{r, i};
       auto [zr, zi] = z;
-      r = if_else(logical_and(is_inf(zr), is_invalid(zi)), zr, r);
-      i = if_else(logical_and(is_inf(zr), is_nan(zi)), nan(as(zr)), i);
+      r = if_else(is_infinite(zr) && is_not_finite(zi), zr, r);
+      i = if_else(is_infinite(zr) && is_nan(zi), nan(as(zr)), i);
       r = if_else(is_nan(zr), zr, r);
       i = if_else(is_nan(zr), zr, i);
       i = if_else(is_real(z), zero, i);

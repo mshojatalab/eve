@@ -12,7 +12,7 @@
 #include <eve/module/core.hpp>
 #include <complex>
 
-EVE_TEST( "Check behavior of cosh on scalar"
+EVE_TEST( "Check behavior of sin on scalar"
         , eve::test::scalar::ieee_reals
         , eve::test::generate( eve::test::randoms(-10, 10)
                              , eve::test::randoms(-10, 10))
@@ -27,14 +27,14 @@ EVE_TEST( "Check behavior of cosh on scalar"
     for(auto f : a1)
     {
       std::cout << "e = " << e << " f =  " <<  f << std::endl;
-      TTS_ULP_EQUAL(eve::cosh(eve::complex<e_t>(e, f)),  z_t(std::cosh(c_t(e, f))), 2);
-      TTS_ULP_EQUAL(eve::pedantic(eve::cosh)(eve::complex<e_t>(e, f)),  z_t(std::cosh(c_t(e, f))), 2);
-      TTS_ULP_EQUAL(eve::cosh(eve::complex<e_t>(e, f)),  z_t(std::cosh(c_t(e, f))), 2.0);
+      TTS_ULP_EQUAL(eve::sin(eve::complex<e_t>(e, f)),  z_t(std::sin(c_t(e, f))), 2);
+      TTS_ULP_EQUAL(eve::pedantic(eve::sin)(eve::complex<e_t>(e, f)),  z_t(std::sin(c_t(e, f))), 2);
+      TTS_ULP_EQUAL(eve::sin(eve::complex<e_t>(e, f)),  z_t(std::sin(c_t(e, f))), 2.0);
     }
   }
 };
 
-EVE_TEST( "Check behavior of cosh on wide"
+EVE_TEST( "Check behavior of sin on wide"
         , eve::test::simd::ieee_reals
         , eve::test::generate(eve::test::randoms(-10, 10)
                              , eve::test::randoms(-10, 10))
@@ -45,7 +45,7 @@ EVE_TEST( "Check behavior of cosh on wide"
   using ce_t = eve::complex<e_t>;
   using z_t = eve::wide<eve::complex<e_t>, typename T::cardinal_type>;
   using c_t = std::complex<e_t>;
-  auto std_ch = [](auto x, auto y){return std::cosh(c_t(x, y)); };
+  auto std_ch = [](auto x, auto y){return std::sin(c_t(x, y)); };
   auto init_with_std = [std_ch](auto a0,  auto a1){
     z_t b;
     for(int i = 0; i !=  eve::cardinal_v<T>; ++i)
@@ -55,11 +55,11 @@ EVE_TEST( "Check behavior of cosh on wide"
     }
     return b;
   };
-  TTS_ULP_EQUAL(eve::cosh(z_t{a0,a1}), init_with_std(a0, a1), 2);
+  TTS_ULP_EQUAL(eve::sin(z_t{a0,a1}), init_with_std(a0, a1), 2);
 };
 
 
-EVE_TEST( "Check behavior of pedantic(cosh) on wide"
+EVE_TEST( "Check behavior of pedantic(sin) on wide"
         , eve::test::simd::ieee_reals
         , eve::test::generate(eve::test::randoms(-10, 10)
                              , eve::test::randoms(-10, 10))
@@ -73,10 +73,10 @@ EVE_TEST( "Check behavior of pedantic(cosh) on wide"
   z_t b;
   for(int i = 0; i !=  eve::cardinal_v<T>; ++i)
   {
-    ce_t z(std::cosh(c_t(a0.get(i), a1.get(i))));
+    ce_t z(std::sin(c_t(a0.get(i), a1.get(i))));
     b.set(i, z);
   }
-  TTS_ULP_EQUAL(eve::pedantic(eve::cosh)(z_t{a0,a1}), b, 2.0);
+  TTS_ULP_EQUAL(eve::pedantic(eve::sin)(z_t{a0,a1}), b, 2.0);
 };
 
 EVE_TEST_TYPES( "Check return types of eve::abs", eve::test::scalar::ieee_reals)
@@ -115,38 +115,11 @@ EVE_TEST_TYPES( "Check return types of eve::abs", eve::test::scalar::ieee_reals)
       c_t(eve::nan(as<e_t>()),piu),                  //23
     };
 
-  std::array<c_t, N> results =
-    { c_t(eve::one(as<e_t>()), eve::zero(as<e_t>())),//0
-      c_t(eve::inf(as<e_t>()),eve::zero(as<e_t>())), //1
-      c_t(eve::inf(as<e_t>()),eve::zero(as<e_t>())), //2
-      c_t(eve::nan(as<e_t>()),eve::zero(as<e_t>())), //3
-      c_t(eve::nan(as<e_t>()), eve::zero(as<e_t>())),//4
-      c_t(eve::inf(as<e_t>()),eve::nan(as<e_t>())),  //5
-      c_t(eve::inf(as<e_t>()),eve::nan(as<e_t>())),  //6
-      c_t(eve::nan(as<e_t>()),eve::nan(as<e_t>())),  //7
-      c_t(eve::nan(as<e_t>()), eve::zero(as<e_t>())),//8
-      c_t(eve::inf(as<e_t>()),eve::nan(as<e_t>())),  //9
-      c_t(eve::inf(as<e_t>()),eve::nan(as<e_t>())),  //10
-      c_t(eve::nan(as<e_t>()),eve::nan(as<e_t>())),  //11
-      c_t(eve::nan(as<e_t>()),eve::zero(as<e_t>())), //12
-      c_t(eve::inf(as<e_t>()),eve::nan(as<e_t>())),  //13
-      c_t(eve::inf(as<e_t>()),eve::nan(as<e_t>())),  //14
-      c_t(eve::nan(as<e_t>()),eve::nan(as<e_t>())),  //15
-      c_t(eve::mone(as<e_t>()),eve::zero(as<e_t>())),//16
-      c_t(eve::minf(as<e_t>()),eve::inf(as<e_t>())), //17
-      c_t(eve::minf(as<e_t>()),eve::minf(as<e_t>())),//18
-      c_t(eve::nan(as<e_t>()),eve::nan (as<e_t>())), //19
-      c_t(eve::mone(as<e_t>()),eve::zero(as<e_t>())),//20
-      c_t(eve::minf(as<e_t>()),eve::minf(as<e_t>())),//21
-      c_t(eve::minf(as<e_t>()),eve::inf(as<e_t>())), //22
-      c_t(eve::nan(as<e_t>()),eve::nan (as<e_t>())), //23
-   };
-
-  auto ch = eve::pedantic(eve::cosh);
+  auto sine = eve::pedantic(eve::sin);
+  auto tsine= [](auto z){return eve::mul_mi(eve::pedantic(eve::sinh)(eve::mul_i(z)));};
   for(int i=0; i < N; ++i)
   {
-    TTS_IEEE_EQUAL(ch(inputs[i]), results[i]);
-    TTS_IEEE_EQUAL(ch(-inputs[i]), ch(inputs[i]));
-    TTS_IEEE_EQUAL(ch(inputs[i]), eve::pedantic(eve::cos)(eve::mul_i(inputs[i])));
+    TTS_IEEE_EQUAL(sine(-inputs[i]), -sine(inputs[i]));
+    TTS_IEEE_EQUAL(sine(inputs[i]), tsine(inputs[i]));
   }
 };
