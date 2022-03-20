@@ -95,7 +95,7 @@ EVE_TEST_TYPES( "Check return types of eve::abs", eve::test::scalar::ieee_reals)
     };
 
   auto tangent = eve::tan;
-  auto ttangent= [](auto z){return eve::mul_mi(eve::pedantic(eve::tanh)(eve::mul_i(z)));};
+  auto ttangent= [](auto z){return eve::mul_mi(eve::tanh(eve::mul_i(z)));};
   for(int i=0; i < N; ++i)
   {
     TTS_IEEE_EQUAL(tangent(-inputs[i]), -tangent(inputs[i]));

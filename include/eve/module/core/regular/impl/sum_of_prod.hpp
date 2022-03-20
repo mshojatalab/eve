@@ -31,14 +31,11 @@ namespace eve::detail
                                    , const T& c
                                    , const T& d
                                    ) noexcept
+  requires(has_native_abi_v<T>)
   {
-    if constexpr(has_native_abi_v<T>)
-    {
-      T mcd = -c * d;
-      T err = fma(c, d, mcd);
-      T dop = fms(a, b, mcd);
-      return dop + err;
-    }
-    else return apply_over2(sum_of_prod, a, b);
+    T mcd = -c * d;
+    T err = fma(c, d, mcd);
+    T dop = fms(a, b, mcd);
+    return dop + err;
   }
 }

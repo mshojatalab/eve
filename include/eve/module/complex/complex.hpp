@@ -50,7 +50,7 @@ namespace eve
     //==============================================================================================
     friend std::ostream& operator<<(std::ostream& os, like<complex> auto const& z)
     {
-      return os << std::setprecision(10) << real(z) << std::showpos << imag(z) << "i" << std::noshowpos;
+      return os << std::setprecision(20) << real(z) << std::showpos << imag(z) << "i" << std::noshowpos;
     }
 
     //==============================================================================================
@@ -460,7 +460,9 @@ namespace eve
                                                 , like<complex> auto const& z
                                                 ) noexcept
     {
-      return eve::sqr(real(z))+eve::sqr(imag(z));
+//      return eve::sqr(real(z))+eve::sqr(imag(z));
+      auto [zr, zi] = z;
+      return sum_of_prod(zr, zr, zi, zi);
     }
 
     template<like<complex> Z>
@@ -499,7 +501,41 @@ namespace eve
     }
 
     template<like<complex> Z>
-    EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::sqrt_, Z const& z ) noexcept
+    EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::sqrt_
+                                               , pedantic_type const &
+                                               , Z const& z ) noexcept
+    {
+      //always compute the sqrt of the complex with positive imaginary part
+      //then conjugate if necessary
+      auto [rz, iz] = z;
+      auto negimag = is_ltz(iz);
+      auto x = abs(rz);
+      auto y = abs(iz);
+      auto iaz = if_else(negimag, -iz, iz); // always >= 0 or -Nan
+      auto gtxy = (x > y);
+      auto gezrz = is_gez(rz);
+      auto r = if_else(gtxy, y/x, x/y);
+      auto rr= sqrt(inc(sqr(r)));
+      auto sqrtx = sqrt(x);
+      auto w = if_else(gtxy,
+                       sqrtx*sqrt(half(as(r))*inc(rr)),
+                       sqrt(y)*sqrt(half(as(r))*(r+rr)));
+      auto is_real_z = is_real(z);
+      auto res = Z(if_else(is_real_z, sqrtx, w)
+                  , if_else(is_real_z, zero, iaz*half(as(r))/w));
+      res = if_else(gezrz, res, Z(imag(res), real(res)));
+      auto infty = inf(as(iaz));
+      res = if_else(iaz == infty,  Z{infty, infty}, z);
+      res = if_else(logical_andnot(rz == -infty, is_nan(iz)), Z{if_else(iaz == infty, iaz, zero), infty}, res);
+      res = if_else(is_eqz(iz) && is_nan(rz), z, res);
+      res = if_else(is_nan(z), Z(nan(as(iz)), nan(as(iz))), res);
+      res = if_else(is_eqz(iz) && is_gez(rz), Z(rz), res);
+      return if_else(negimag, conj(res), res);
+    }
+
+    template<like<complex> Z>
+    EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::sqrt_
+                                               , Z const& z ) noexcept
     {
       //always compute the sqrt of the complex with positive imaginary part
       //then conjugate if necessary
@@ -523,6 +559,12 @@ namespace eve
       return if_else(negimag, conj(res), res);
     }
 
+
+//     template<like<complex> Z>
+//     EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::sqrt_, Z const& z ) noexcept
+//     {
+//       return regular(sqrt)(z);
+//     }
 
     //==============================================================================================
     // trigo
