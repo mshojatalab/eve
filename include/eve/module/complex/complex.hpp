@@ -680,10 +680,30 @@ namespace eve
     }
 
     template<like<complex> Z>
+    EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::log_, pedantic_type const &, Z const& z ) noexcept
+    {
+      auto [zr, zi] = z;
+      auto argz = eve::arg(z);
+      auto absz = if_else(is_nan(zr) && is_infinite(zi), inf(as(argz)), abs(z));
+      absz = if_else(is_infinite(zr) && is_nan(zi),  inf(as(argz)), absz);
+      return Z{log(absz), argz};
+    }
+
+    template<like<complex> Z>
     EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::log10_, Z const& z ) noexcept
     {
       auto a = if_else(is_real(z) && is_nan(imag(z)), zero, arg(z)) ;
       return Z{log10(abs(z)), a*invlog_10(as(real(z)))};
+    }
+
+    template<like<complex> Z>
+    EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::log10_, pedantic_type const &, Z const& z ) noexcept
+    {
+      auto [zr, zi] = z;
+      auto argz = eve::arg(z);
+      auto absz = if_else(is_nan(zr) && is_infinite(zi), inf(as(argz)), abs(z));
+      absz = if_else(is_infinite(zr) && is_nan(zi),  inf(as(argz)), absz);
+      return Z{log10(absz), argz*invlog_10(as(real(z)))};
     }
 
     template<like<complex> Z>
@@ -707,8 +727,8 @@ namespace eve
     EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::exp_ipi_, Z const& z ) noexcept
     {
       auto [rz, iz] = z;
-      auto [s, c]   = sinpicospi(iz);
-      auto rho = exp(pi(as(iz))*iz);
+      auto [s, c]   = sinpicospi(rz);
+      auto rho = exp(-pi(as(iz))*iz);
       return if_else(is_imag(z) || iz == inf(as(rz)),
                      Z{rho},
                      Z{rho*c, rho*s});

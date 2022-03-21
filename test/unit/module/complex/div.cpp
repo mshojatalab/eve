@@ -35,8 +35,6 @@ EVE_TEST_TYPES( "Check complex::operator+", eve::test::scalar::ieee_reals)
   w_t wi(fill_i);
   w_t wr1(fill_r1);
   w_t wi1(fill_i1);
-//   std::cout <<  "wr " << wr << std::endl;
-//   std::cout <<  "wi " << wi << std::endl;
 
   eve::wide<eve::complex<T>> z(wr, wi);
   eve::wide<eve::complex<T>> zbar(wr, -wi);
@@ -45,10 +43,6 @@ EVE_TEST_TYPES( "Check complex::operator+", eve::test::scalar::ieee_reals)
     return std::complex<T>(eve::real(a), eve::imag(a))/std::complex<T>(eve::real(b), eve::imag(b));
   };
   auto my_div = [std_div](cw_t a,  cw_t b) -> cw_t { return map(std_div, a, b); };
-//   std::cout <<  "z       " << z << std::endl;
-//   std::cout <<  "zbar    " << z << std::endl;
-//   std::cout <<  "z/zbar  " << z/zbar << std::endl;
-//   std::cout <<  "z/zbar  " << my_div(z, zbar);
 
   TTS_EXPECT(eve::all(eve::ulpdist( z/zbar, my_div(z, zbar)) <= 2));
   TTS_EXPECT(eve::all(eve::ulpdist( z/z1,   my_div(z, z1)  ) <= 2));
