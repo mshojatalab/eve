@@ -13,16 +13,16 @@
 
 namespace eve::detail
 {
-  template<floating_real_value T, decorator D>
-  EVE_FORCEINLINE constexpr T log_abs_(EVE_SUPPORTS(cpu_), D const &, T x) noexcept
+  template<typename T, decorator D> //TODO change typename when complex are value or satisfy another concept
+  EVE_FORCEINLINE constexpr auto log_abs_(EVE_SUPPORTS(cpu_), D const &, T x) noexcept
   requires(is_one_of<D>(types<regular_type, pedantic_type> {}))
   {
-    return D()(eve::log(eve::abs(x)));
+    return D()(eve::log)(eve::abs(x));
   }
 
-  template<floating_real_value T>
-  EVE_FORCEINLINE constexpr T log_abs_(EVE_SUPPORTS(cpu_), T x) noexcept
+  template<typename T> //TODO change typename when complex are value or satisfy another concept
+  EVE_FORCEINLINE constexpr auto log_abs_(EVE_SUPPORTS(cpu_), T x) noexcept
   {
-    return log(eve::abs(x));;
+    return eve::log(eve::abs(x));;
   }
 }
