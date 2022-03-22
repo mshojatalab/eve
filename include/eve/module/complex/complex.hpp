@@ -103,9 +103,23 @@ namespace eve
     }
 
     template<like<complex> Z>
+    EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::is_imag_, almost_type const &, Z const& z ) noexcept
+    {
+      auto [rz, iz] = z;
+      return abs(rz) <= abs(z)*eps(as(rz));
+    }
+
+    template<like<complex> Z>
     EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::is_real_, Z const& z ) noexcept
     {
       return is_eqz(imag(z));
+    }
+
+    template<like<complex> Z>
+    EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::is_real_, almost_type const &, Z const& z ) noexcept
+    {
+      auto [rz, iz] = z;
+      return abs(iz) <= abs(z)*eps(as(rz));
     }
 
     template<like<complex> Z>
@@ -474,7 +488,7 @@ namespace eve
     {
       auto [a, b] = z;
       auto n2 = sqr_abs(z);
-      return Z{a/n2, b/n2};
+      return Z{a/n2, -b/n2};
     }
 
     template<like<complex> Z, floating_real_value O>
@@ -833,12 +847,18 @@ namespace eve
       return Z{ ldexp(real(z1), n), ldexp(imag(z1), n)};
     }
 
+    template<like<complex> Z>
     EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::pow_
-                                                 , like<complex> auto const & a
-                                                 , like<complex> auto const & b
+                                                 , Z const & a
+                                                 , Z const & b
                                                  ) noexcept
     {
-      return if_else(is_eqz(a)&&is_eqz(b), one, exp(a*log(b)));
+      auto [u, v] = b;
+      auto labsa = log_abs(a);
+      auto arga = arg(a);
+      auto rz = exp(diff_of_prod(u, labsa, v, arga));
+      auto iz = exp_i(sum_of_prod(u, arga, v, labsa));
+      return if_else(is_eqz(a)&&is_eqz(b), one, mul(iz, rz));
     }
 
     template<like<complex> Z, floating_real_value T>
@@ -849,7 +869,7 @@ namespace eve
     {
       auto t = arg(a0);
       auto a = abs(a0);
-      return if_else(is_eqz(a)&&is_eqz(a1), one, pow(a, a1)*exp_i(t*a1));
+      return if_else(is_eqz(a)&&is_eqz(a1), one, eve::pow(a, a1)*exp_i(t*a1));
     }
 
     template<like<complex> Z, floating_real_value T>
@@ -860,6 +880,15 @@ namespace eve
     {
       return if_else(is_eqz(a0)&&is_eqz(a1), one, exp(a1*cmplx(log)(a0)));
     }
+
+    EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::dist_
+                                                , like<complex> auto z1
+                                                , like<complex> auto z2
+                                                ) noexcept
+    {
+      return abs(z1-z2);
+    }
+
   };
 
   //================================================================================================

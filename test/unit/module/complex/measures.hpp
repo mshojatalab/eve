@@ -25,7 +25,6 @@ namespace eve
   {
     return is_equal(l, r);
   }
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,7 +36,17 @@ namespace tts
   template<typename T, typename N>
   inline double ulp_distance(eve::wide<eve::complex<T>, N> const &l, eve::wide<eve::complex<T>, N> const &r)
   {
-    return eve::maximum(eve::ulpdist(l, r));
+    auto diff = l-r;
+    auto [rl, il] = l;
+    auto [rr, ir] = r;
+    auto d = eve::if_else(eve::almost(eve::is_real)(diff)
+                         , eve::ulpdist(rl, rr)
+                         , eve::if_else(eve::almost(eve::is_imag)(diff)
+                                       , eve::ulpdist(il, ir)
+                                       , eve::ulpdist(l, r)
+                                       )
+                         );
+    return eve::maximum(d);
   }
 
   template<typename T, typename N>
@@ -49,8 +58,7 @@ namespace tts
   template<typename T, typename N>
   inline double absolute_distance(eve::wide<eve::complex<T>, N> const &l, eve::wide<eve::complex<T>, N> const &r)
   {
-    std::cout << "icitte simd" << std::endl;
-    return eve::maximum(eve::dist(l, r));
+     return eve::maximum(eve::dist(l, r));
   }
 
   /////////////
@@ -60,7 +68,6 @@ namespace tts
   template<typename T>
   inline double ulp_distance(eve::complex<T> const &l, eve::complex<T> const &r)
   {
-    std::cout << "icitte scalar" << std::endl;
    return eve::ulpdist(l, r);
   }
 
@@ -74,7 +81,15 @@ namespace tts
   template<typename T>
   inline double absolute_distance(eve::complex<T> const &l, eve::complex<T> const &r)
   {
-    return eve::dist(l, r);
+    auto diff = l-r;
+    auto [rl, il] = l;
+    auto [rr, ir] = r;
+    auto d = eve::if_else(eve::almost(eve::is_real)(diff)
+                         , eve::ulpdist(rl, rr)
+                         , eve::if_else(eve::almost(eve::is_imag)(diff)
+                                       , eve::ulpdist(il, ir)
+                                       , eve::ulpdist(l, r)));
+    return d;
   }
 
 }
