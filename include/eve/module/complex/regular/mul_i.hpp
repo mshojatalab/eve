@@ -68,5 +68,17 @@ namespace eve
         return c_t{zero(as(v)), v};
       }
     }
+
+    template<floating_value V> EVE_FORCEINLINE
+    auto operator*(V v, callable_i_) noexcept
+    {
+      return mul_i(v);
+    }
+
+    template<floating_value V> EVE_FORCEINLINE
+    auto operator*(callable_i_, V v) noexcept
+    {
+      return mul_i(v);
+    }
   }
 }

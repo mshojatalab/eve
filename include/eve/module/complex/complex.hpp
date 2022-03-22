@@ -141,7 +141,8 @@ namespace eve
    template<like<complex> Z>
     EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::is_nan_, Z const& z ) noexcept
     {
-      return is_nan(imag(z)) || is_nan(real(z));
+      auto [rz, iz] = z;
+      return is_unordered(rz, iz);
     }
 
     //==============================================================================================
@@ -249,12 +250,40 @@ namespace eve
       return self;
     }
 
+    EVE_FORCEINLINE friend auto& operator*= ( like<complex> auto & self
+                                            , callable_i_ const &
+                                            ) noexcept
+    {
+      auto [a, b] = self;
+      return self = {-b, a};
+    }
+
     EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::mul_
                                                 , like<complex> auto z1
                                                 , like<complex> auto z2
                                                 ) noexcept
     {
       return z1 *= z2;
+    }
+
+    template < like<complex> Z>
+    EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::mul_
+                                                , Z z
+                                                , callable_i_ const &
+                                                ) noexcept
+    {
+      auto [rz, iz] = z;
+      return Z{-iz, rz};
+    }
+
+    template < like<complex> Z>
+    EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::mul_
+                                                , callable_i_ const &
+                                                , Z z
+                                                ) noexcept
+    {
+      auto [rz, iz] = z;
+      return Z{-iz, rz};
     }
 
     template<like<complex> Z, floating_real_value O>
@@ -300,6 +329,24 @@ namespace eve
                                           ) noexcept
     {
       return mul(a1, a0);
+    }
+
+    template<like<complex> Z>
+    EVE_FORCEINLINE friend auto operator*( Z z
+                                         , callable_i_
+                                         ) noexcept
+    {
+      auto [rz, iz] = z;
+      return Z(-iz, rz);
+    }
+
+    template<like<complex> Z>
+    EVE_FORCEINLINE friend auto  operator*( callable_i_
+                                          , Z z
+                                          ) noexcept
+    {
+      auto [rz, iz] = z;
+      return Z(-iz, rz);
     }
 
     EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::mul_

@@ -60,10 +60,19 @@ namespace eve
 
     template<floating_value U> EVE_FORCEINLINE auto polar_(EVE_SUPPORTS(cpu_), U rho, U theta) noexcept
     {
-      using elt_t = element_type_t<U>;
-      using c_t = eve::wide<eve::complex<elt_t>, eve::cardinal_t<U>>;
-      auto [s, c] = sincos(theta);
-      return c_t{rho*c, rho*s};
+      if constexpr(scalar_value<U>)
+      {
+        using c_t = eve::complex<U>;
+        auto [s, c] = sincos(theta);
+        return c_t{rho*c, rho*s};
+      }
+      else
+      {
+        using elt_t = element_type_t<U>;
+        using c_t = eve::wide<eve::complex<elt_t>, eve::cardinal_t<U>>;
+        auto [s, c] = sincos(theta);
+        return c_t{rho*c, rho*s};
+      }
     }
   }
 }

@@ -6,10 +6,11 @@
 **/
 //==================================================================================================
 #include "test.hpp"
+#include "measures.hpp"
 #include <eve/module/complex.hpp>
 #include <complex>
 
-EVE_TEST_TYPES( "Check complex::operator+", eve::test::scalar::ieee_reals)
+EVE_TEST_TYPES( "Check complex::operator*", eve::test::scalar::ieee_reals)
 <typename T>(eve::as<T>)
 {
   using w_t = eve::wide<T>;
@@ -40,7 +41,6 @@ EVE_TEST_TYPES( "Check complex::operator+", eve::test::scalar::ieee_reals)
     return std::complex<T>(eve::real(a), eve::imag(a))*std::complex<T>(eve::real(b), eve::imag(b));
   };
   auto my_mul = [std_mul](cw_t a,  cw_t b) -> cw_t { return map(std_mul, a, b); };
-
   TTS_ULP_EQUAL(z*zbar, my_mul(z, zbar), 0.5);
   TTS_ULP_EQUAL( z*zbar, my_mul(z, zbar), 0.5);
   TTS_ULP_EQUAL(z*z1,   my_mul(z, z1), 0.5);
