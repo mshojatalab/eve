@@ -53,7 +53,9 @@ namespace eve
 
   namespace detail
   {
-    template<floating_real_value V> EVE_FORCEINLINE V imag_(EVE_SUPPORTS(cpu_), V v) noexcept
+    template<floating_real_value V>
+    EVE_FORCEINLINE V imag_( EVE_SUPPORTS(cpu_)
+                           , V const & v) noexcept
     {
       return v;
     }

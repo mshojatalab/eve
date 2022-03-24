@@ -41,5 +41,6 @@
 #include <eve/module/core/constant/oneosqrteps.hpp>
 #include <eve/module/core/constant/smallestposval.hpp>
 #include <eve/module/core/constant/sqrteps.hpp>
+#include <eve/module/core/constant/sqrtsmallestposval.hpp>
 #include <eve/module/core/constant/sqrtvalmax.hpp>
 #include <eve/module/core/constant/twotonmb.hpp>

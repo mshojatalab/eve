@@ -8,21 +8,18 @@
 #pragma once
 
 #include <eve/detail/overload.hpp>
-#include <eve/module/core.hpp>
-#include <eve/module/complex/regular/traits.hpp>
 
 namespace eve
 {
 
   namespace detail
   {
-    template<floating_real_value V>
-    EVE_FORCEINLINE auto sqrt_( EVE_SUPPORTS(cpu_)
-                              , cmplx_type const &
-                              , V const & v) noexcept
+    template<floating_value V> EVE_FORCEINLINE V atan_(EVE_SUPPORTS(cpu_)
+                                                      , cmplx_type const &
+                                                      , V const & v) noexcept
     {
-      using c_t = as_complex_t<V>;
-      return if_else(is_positive(v), c_t{sqrt(v), zero(as(v))}, c_t{zero(as(v)), sqrt(-v)});
+      using r_t = eve::as_complex_t<V>;
+      return if_else(eve::abs(v) <= 1, r_t(0, atan(v)), r_t(atanh(v)));
     }
   }
 }

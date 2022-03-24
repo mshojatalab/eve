@@ -185,8 +185,8 @@ namespace eve
     }
 
     EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::sub_
-                                                , like<complex> auto z1
-                                                , like<complex> auto z2
+                                                , like<complex> auto const & z1
+                                                , like<complex> auto const & z2
                                                 ) noexcept
     {
       return z1 -= z2;
@@ -194,7 +194,7 @@ namespace eve
 
     template<like<complex> Z, floating_real_value O>
     EVE_FORCEINLINE friend auto tagged_dispatch (  eve::tag::sub_
-                                                , Z const  self
+                                                , Z const & self
                                                 , O const & other
                                                 ) noexcept
     {
@@ -204,7 +204,7 @@ namespace eve
 
     template<like<complex> Z, floating_real_value O>
     EVE_FORCEINLINE friend auto tagged_dispatch (  eve::tag::sub_
-                                                , O const  a0
+                                                , O const & a0
                                                 , Z const & a1
                                                 ) noexcept
     {
@@ -213,8 +213,8 @@ namespace eve
     }
 
     EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::add_
-                                                , like<complex> auto z1
-                                                , like<complex> auto z2
+                                                , like<complex> auto const & z1
+                                                , like<complex> auto const & z2
                                                 ) noexcept
     {
       return z1 += z2;
@@ -222,8 +222,8 @@ namespace eve
 
     template<like<complex> Z, floating_real_value O>
     EVE_FORCEINLINE friend auto tagged_dispatch (  eve::tag::add_
-                                                , Z const  self
-                                                , O const & other
+                                                , Z const & self
+                                                , O const &  other
                                                 ) noexcept
     {
       auto [a, b] = self;
@@ -232,7 +232,7 @@ namespace eve
 
     template<like<complex> Z, floating_real_value O>
     EVE_FORCEINLINE friend auto tagged_dispatch (  eve::tag::add_
-                                                , O a0
+                                                , O const & a0
                                                 , Z const & a1
                                                 ) noexcept
     {
@@ -240,12 +240,12 @@ namespace eve
       return Z{ a+a0, b};
     }
 
-    template<like<complex> Z> EVE_FORCEINLINE friend auto operator-(Z z) noexcept
+    template<like<complex> Z> EVE_FORCEINLINE friend auto operator-(Z const & z) noexcept
     {
       return Z{-real(z), -imag(z)};
     }
 
-    template<like<complex> Z> EVE_FORCEINLINE friend auto operator+(Z z) noexcept
+    template<like<complex> Z> EVE_FORCEINLINE friend auto operator+(Z const &z) noexcept
     {
       return z;
     }
@@ -254,14 +254,17 @@ namespace eve
     // multiplies
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    EVE_FORCEINLINE friend auto& operator*= ( like<complex> auto & self
-                                            , like<complex> auto const & other
-                                            ) noexcept
+
+  EVE_FORCEINLINE friend auto& operator*= ( like<complex> auto  & self
+                                          , like<complex> auto  const & other
+                                          ) noexcept
     {
+      using r_t = std::remove_reference_t<decltype(self)>;
       auto [a, b] = self;
       auto [c, d] = other;
-      self = {diff_of_prod(a, c, b, d), sum_of_prod(a, d, b, c)};
-      return self;
+      auto rr = diff_of_prod(a, c, b, d);
+      auto ri = sum_of_prod(a, d, b, c);
+      return self = r_t(rr, ri);
     }
 
     EVE_FORCEINLINE friend auto& operator*= ( like<complex> auto & self
@@ -273,16 +276,28 @@ namespace eve
     }
 
     EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::mul_
-                                                , like<complex> auto z1
-                                                , like<complex> auto z2
+                                                , like<complex> auto  z1
+                                                , like<complex> auto const & z2
                                                 ) noexcept
     {
       return z1 *= z2;
     }
 
+   template < like<complex> Z>
+   EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::mul_
+                                               , raw_type const &
+                                               , Z const & z1
+                                               , Z const & z2
+                                               ) noexcept
+    {
+      auto [a, b] = z1;
+      auto [c, d] = z2;
+      return  Z{a,*c-b*d, a*d+d*c};
+    }
+
     template < like<complex> Z>
     EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::mul_
-                                                , Z z
+                                                , Z const & z
                                                 , callable_i_ const &
                                                 ) noexcept
     {
@@ -293,7 +308,7 @@ namespace eve
     template < like<complex> Z>
     EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::mul_
                                                 , callable_i_ const &
-                                                , Z z
+                                                , Z const & z
                                                 ) noexcept
     {
       auto [rz, iz] = z;
@@ -302,8 +317,8 @@ namespace eve
 
     template<like<complex> Z, floating_real_value O>
     EVE_FORCEINLINE friend auto& operator *= ( Z & self
-                                            , O const & other
-                                            ) noexcept
+                                             , O const & other
+                                             ) noexcept
     {
       auto [a, b] = self;
       return self = Z{ a*other, b*other};
@@ -311,8 +326,8 @@ namespace eve
 
     template<like<complex> Z, floating_real_value O>
     EVE_FORCEINLINE friend auto tagged_dispatch (  eve::tag::mul_
-                                                , Z a0
-                                                , O a1
+                                                , Z const & a0
+                                                , O const & a1
                                                 ) noexcept
     {
       auto [a, b] = a0;
@@ -321,8 +336,8 @@ namespace eve
 
     template<like<complex> Z, floating_real_value O>
     EVE_FORCEINLINE friend auto tagged_dispatch (  eve::tag::mul_
-                                                , O a0
-                                                , Z a1
+                                                , O const & a0
+                                                , Z const & a1
                                                 ) noexcept
     {
       auto [a, b] = a1;
@@ -330,24 +345,24 @@ namespace eve
     }
 
     template<like<complex> Z, floating_real_value O>
-    EVE_FORCEINLINE friend auto operator*( Z a0
-                                         , O a1
+    EVE_FORCEINLINE friend auto operator*( Z const & a0
+                                         , O const & a1
                                          ) noexcept
     {
       return mul(a0, a1);
     }
 
     template<like<complex> Z, floating_real_value O>
-    EVE_FORCEINLINE friend auto  operator*( O a0
-                                          , Z a1
+    EVE_FORCEINLINE friend auto  operator*( O const & a0
+                                          , Z const & a1
                                           ) noexcept
     {
       return mul(a1, a0);
     }
 
     template<like<complex> Z>
-    EVE_FORCEINLINE friend auto operator*( Z z
-                                         , callable_i_
+    EVE_FORCEINLINE friend auto operator*( Z const & z
+                                         , callable_i_ const &
                                          ) noexcept
     {
       auto [rz, iz] = z;
@@ -355,8 +370,8 @@ namespace eve
     }
 
     template<like<complex> Z>
-    EVE_FORCEINLINE friend auto  operator*( callable_i_
-                                          , Z z
+    EVE_FORCEINLINE friend auto  operator*( callable_i_ const &
+                                          , Z const & z
                                           ) noexcept
     {
       auto [rz, iz] = z;
@@ -429,8 +444,8 @@ namespace eve
 
     template<like<complex> Z, floating_real_value O>
     EVE_FORCEINLINE friend auto tagged_dispatch (  eve::tag::div_
-                                                , Z a0
-                                                , O a1
+                                                , Z const & a0
+                                                , O const & a1
                                                 ) noexcept
     {
       auto [a, b] = a0;
@@ -439,8 +454,8 @@ namespace eve
 
     template<like<complex> Z, floating_real_value O>
     EVE_FORCEINLINE friend auto tagged_dispatch (  eve::tag::div_
-                                                , O a0
-                                                , Z a1
+                                                , O const & a0
+                                                , Z const & a1
                                                 ) noexcept
     {
       return mul(rec(a1), a0);
@@ -448,16 +463,17 @@ namespace eve
 
     EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::div_
                                                 , like<complex> auto a0
-                                                , like<complex> auto a1
+                                                , like<complex> auto const & a1
                                                 ) noexcept
     {
+
       return a0 /= a1;
     }
 
     EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::div_
                                                 , pedantic_type const &
-                                                , like<complex> auto a0
-                                                , like<complex> auto a1
+                                                , like<complex> auto const & a0
+                                                , like<complex> auto const & a1
                                                 ) noexcept
     {
       auto rr = eve::abs(real(a0));
@@ -492,16 +508,16 @@ namespace eve
     }
 
     template<like<complex> Z, floating_real_value O>
-    EVE_FORCEINLINE friend auto operator/( Z a0
-                                         , O a1
+    EVE_FORCEINLINE friend auto operator/( Z const & a0
+                                         , O const & a1
                                          ) noexcept
     {
       return div(a0, a1);
     }
 
     template<like<complex> Z, floating_real_value O>
-    EVE_FORCEINLINE friend auto  operator/( O a0
-                                          , Z a1
+    EVE_FORCEINLINE friend auto  operator/( O const & a0
+                                          , Z const & a1
                                           ) noexcept
     {
       return div(a0, a1);
@@ -521,9 +537,18 @@ namespace eve
                                                 , like<complex> auto const& z
                                                 ) noexcept
     {
-//      return eve::sqr(real(z))+eve::sqr(imag(z));
       auto [zr, zi] = z;
       return sum_of_prod(zr, zr, zi, zi);
+    }
+
+    template<like<complex> Z>
+    EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::sqr_
+                                                , eve::raw_type const &
+                                                , Z const& z
+                                                ) noexcept
+    {
+      auto [zr, zi] = z;
+      return Z{eve::sqr(zr)-eve::sqr(zi), 2*zr*zi};
     }
 
     template<like<complex> Z>
@@ -619,13 +644,6 @@ namespace eve
       res = if_else(gezrz, res, Z(imag(res), real(res)));
       return if_else(negimag, conj(res), res);
     }
-
-
-//     template<like<complex> Z>
-//     EVE_FORCEINLINE friend auto tagged_dispatch( eve::tag::sqrt_, Z const& z ) noexcept
-//     {
-//       return regular(sqrt)(z);
-//     }
 
     //==============================================================================================
     // trigo
@@ -806,14 +824,14 @@ namespace eve
     //  Binary functions
     //==============================================================================================
     EVE_FORCEINLINE friend auto operator == ( like<complex> auto const & a
-                                             , like<complex> auto const & b
+                                            , like<complex> auto const & b
                                             ) noexcept
     {
       return (real(a) == real(b)) &&  (imag(a) == imag(b));
     }
 
     EVE_FORCEINLINE friend auto operator != ( like<complex> auto const & a
-                                             , like<complex> auto const & b
+                                            , like<complex> auto const & b
                                             ) noexcept
     {
       return (real(a) != real(b)) || (imag(a) != imag(b));
@@ -882,14 +900,65 @@ namespace eve
     }
 
     EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::dist_
-                                                , like<complex> auto z1
-                                                , like<complex> auto z2
+                                                , like<complex> auto  const & z1
+                                                , like<complex> auto  const & z2
                                                 ) noexcept
     {
       return abs(z1-z2);
     }
 
-  };
+    EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::acosh_
+                                                , like<complex> auto  const & z
+                                                ) noexcept
+    {
+      // acosh(a0) = +/-i acos(a0)
+      // Choosing the sign of multiplier to give nt2::real(acosh(a0)) >= 0
+      // we have compatibility with C99.
+      auto res = eve::acos(z);
+      return if_else(is_lez(imag(res)),  mul_i(res), mul_mi(res));
+    }
+
+    EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::acos_
+                                                , like<complex> auto  const & z
+                                                ) noexcept
+    {
+      return eve::detail::internal_acos(z);
+    }
+
+    EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::asinh_
+                                                , like<complex> auto  const & z
+                                                ) noexcept
+    {
+      // We use asinh(z) = i asin(-i z);
+      // Note that C99 defines this the other way around (which is
+      // to say asin is specified in terms of asinh), this is consistent
+      // with C99 though:
+      return  mul_i(asin(mul_mi(z)));
+    }
+
+    EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::asin_
+                                                , like<complex> auto  const & z
+                                                ) noexcept
+    {
+      return eve::detail::internal_asin(z);
+    }
+
+    EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::atan_
+                                                , like<complex> auto  const & z
+                                                ) noexcept
+    {
+      // C99 definition here; atan(z) = -i atanh(iz):
+      return mul_mi(eve::atanh(mul_i(z)));
+    }
+
+    EVE_FORCEINLINE friend auto tagged_dispatch ( eve::tag::atanh_
+                                                , like<complex> auto  const & z
+                                                ) noexcept
+    {
+      return eve::detail::internal_atanh(z);
+    }
+
+ };
 
   //================================================================================================
   //! @}

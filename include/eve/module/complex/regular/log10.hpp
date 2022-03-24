@@ -21,17 +21,8 @@ namespace eve
                                          cmplx_type const &,
                                          V v) noexcept
     {
-     if constexpr(scalar_value<V>)
-      {
-        using c_t = complex<decltype(v)>;
-        return c_t{log10(abs(v)), arg(v)/log_10(as(v))};
-      }
-      else
-      {
-        using elt_t = element_type_t<V>;
-        using c_t = eve::wide<eve::complex<elt_t>, eve::cardinal_t<V>>;
-        return c_t{log10(abs(v)), arg(v)/log_10(as(v))};
-      }
+      using c_t = as_complex_t<decltype(v)>;
+      return c_t{log10(abs(v)), arg(v)/log_10(as(v))};
     }
   }
 }

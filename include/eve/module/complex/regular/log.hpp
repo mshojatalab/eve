@@ -18,20 +18,11 @@ namespace eve
   {
     template<floating_real_value V>
     EVE_FORCEINLINE auto log_(EVE_SUPPORTS(cpu_),
-                                         cmplx_type const &,
-                                         V v) noexcept
+                              cmplx_type const &,
+                              V const & v) noexcept
     {
-     if constexpr(scalar_value<V>)
-      {
-        using c_t = complex<decltype(v)>;
-        return c_t{log_abs(v), arg(v)};
-      }
-      else
-      {
-        using elt_t = element_type_t<V>;
-        using c_t = eve::wide<eve::complex<elt_t>, eve::cardinal_t<V>>;
-        return c_t{log_abs(v), arg(v)};
-      }
+      using c_t = as_complex_t<V>;
+      return c_t{log_abs(v), arg(v)};
     }
   }
 }

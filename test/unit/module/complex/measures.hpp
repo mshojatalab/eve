@@ -68,7 +68,15 @@ namespace tts
   template<typename T>
   inline double ulp_distance(eve::complex<T> const &l, eve::complex<T> const &r)
   {
-   return eve::ulpdist(l, r);
+    auto diff = l-r;
+    auto [rl, il] = l;
+    auto [rr, ir] = r;
+    auto d = eve::if_else(eve::almost(eve::is_real)(diff)
+                         , eve::ulpdist(rl, rr)
+                         , eve::if_else(eve::almost(eve::is_imag)(diff)
+                                       , eve::ulpdist(il, ir)
+                                       , eve::ulpdist(l, r)));
+    return eve::if_else(eve::almost(eve::is_real)(diff) && eve::almost(eve::is_imag)(diff), eve::zero, d);
   }
 
   template<typename T>
@@ -81,15 +89,7 @@ namespace tts
   template<typename T>
   inline double absolute_distance(eve::complex<T> const &l, eve::complex<T> const &r)
   {
-    auto diff = l-r;
-    auto [rl, il] = l;
-    auto [rr, ir] = r;
-    auto d = eve::if_else(eve::almost(eve::is_real)(diff)
-                         , eve::ulpdist(rl, rr)
-                         , eve::if_else(eve::almost(eve::is_imag)(diff)
-                                       , eve::ulpdist(il, ir)
-                                       , eve::ulpdist(l, r)));
-    return d;
+    return eve::dist(l, r);
   }
 
 }

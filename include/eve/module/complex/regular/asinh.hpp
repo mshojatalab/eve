@@ -8,20 +8,18 @@
 #pragma once
 
 #include <eve/detail/overload.hpp>
-#include <eve/module/core.hpp>
 
 namespace eve
 {
-  template<floating_scalar_value Type> struct complex;
 
   namespace detail
   {
-    template<floating_real_value V>
-    EVE_FORCEINLINE auto sub_(EVE_SUPPORTS(cpu_)
-                             ,V v
-                             , like<complex> auto const & a) noexcept
+    template<floating_value V> EVE_FORCEINLINE V asinh_(EVE_SUPPORTS(cpu_)
+                                                       , cmplx_type const &
+                                                       , V const & v) noexcept
     {
-      return add(-a, v);
+      using r_t = eve::as_complex_t<V>;
+      return if_else(eve::abs(v) <= 1, r_t(0, asin(v)), r_t(asinh(v)));
     }
   }
 }

@@ -54,29 +54,20 @@ namespace eve
   namespace detail
   {
     template<floating_value V> EVE_FORCEINLINE
-    auto mul_i_(EVE_SUPPORTS(cpu_), V v) noexcept
+    auto mul_i_(EVE_SUPPORTS(cpu_), V const & v) noexcept
     {
-      if constexpr(scalar_value<V>)
-      {
-        using c_t = eve::complex < V>;
-        return c_t{zero(as(v)), v};
-      }
-      else
-      {
-        using elt_t = element_type_t<V>;
-        using c_t = eve::wide<eve::complex<elt_t>, eve::cardinal_t<V>>;
-        return c_t{zero(as(v)), v};
-      }
+      using c_t = eve::as_complex_t<V>;
+      return c_t{zero(as(v)), v};
     }
 
     template<floating_value V> EVE_FORCEINLINE
-    auto operator*(V v, callable_i_) noexcept
+    auto operator*(V const & v, callable_i_) noexcept
     {
       return mul_i(v);
     }
 
     template<floating_value V> EVE_FORCEINLINE
-    auto operator*(callable_i_, V v) noexcept
+    auto operator*(callable_i_, V const & v) noexcept
     {
       return mul_i(v);
     }

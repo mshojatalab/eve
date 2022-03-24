@@ -69,7 +69,8 @@ namespace eve
 
   namespace detail
   {
-    template<value V> EVE_FORCEINLINE V conj_(EVE_SUPPORTS(cpu_), V v) noexcept
+    template<value V> EVE_FORCEINLINE V conj_( EVE_SUPPORTS(cpu_)
+                                             , V const & v) noexcept
     {
       return v;
     }

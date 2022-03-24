@@ -8,6 +8,7 @@
 #pragma once
 
 #include <eve/detail/overload.hpp>
+#include <eve/module/complex/regular/traits.hpp>
 
 namespace eve
 {
@@ -54,21 +55,11 @@ namespace eve
   namespace detail
   {
     template<floating_value V> EVE_FORCEINLINE
-    auto exp_ipi_(EVE_SUPPORTS(cpu_), V v) noexcept
+    auto exp_ipi_(EVE_SUPPORTS(cpu_), V const & v) noexcept
     {
-      if constexpr(scalar_value<V>)
-      {
-        using c_t = eve::complex<V>;
-        auto [s, c] = sinpicospi(v);
-        return c_t{c, s};
-      }
-      else
-      {
-        using elt_t = element_type_t<V>;
-        using c_t = eve::wide<eve::complex<elt_t>, eve::cardinal_t<V>>;
-        auto [s, c] = sinpicospi(v);
-        return c_t{c, s};
-      }
+      using c_t = eve::as_complex_t<V>;
+      auto [s, c] = sinpicospi(v);
+      return c_t{c, s};
     }
   }
 }
