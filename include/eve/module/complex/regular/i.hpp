@@ -54,12 +54,5 @@ namespace eve
     {
       return eve::as_complex_t<as_real_t<T>>{0,1};
     }
-
-    template<typename T, typename D>
-    EVE_FORCEINLINE constexpr auto i_(EVE_SUPPORTS(cpu_), D const &, as<T> const &) noexcept
-    requires(is_one_of<D>(types<upward_type, downward_type> {}))
-    {
-      return i( as<T>{} );
-    }
   }
 }

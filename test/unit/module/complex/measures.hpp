@@ -8,10 +8,8 @@
 #pragma once
 
 #include <eve/wide.hpp>
-#include <eve/arch/top_bits.hpp>
 #include <eve/module/core.hpp>
 #include <eve/module/complex.hpp>
-
 
 namespace eve
 {
@@ -85,11 +83,9 @@ namespace tts
     return eve::reldist(l, r);
   }
 
-
   template<typename T>
   inline double absolute_distance(eve::complex<T> const &l, eve::complex<T> const &r)
   {
     return eve::dist(l, r);
   }
-
 }
