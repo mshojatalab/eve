@@ -45,19 +45,17 @@ namespace eve
   //!
   //!  @}
   //================================================================================================
+  namespace tag { struct imag_; }
+  template<> struct supports_conditional<tag::imag_> : std::false_type {};
 
-  namespace tag { struct real_; }
-  template<> struct supports_conditional<tag::real_> : std::false_type {};
-
-  EVE_MAKE_CALLABLE(real_, real);
+  EVE_MAKE_CALLABLE(imag_, imag);
 
   namespace detail
   {
     template<floating_real_value V>
-    EVE_FORCEINLINE V real_( EVE_SUPPORTS(cpu_)
-                           , V const &) noexcept
+    EVE_FORCEINLINE V imag_( EVE_SUPPORTS(cpu_), V const & v) noexcept
     {
-      return V(0);
+      return v;
     }
   }
 }

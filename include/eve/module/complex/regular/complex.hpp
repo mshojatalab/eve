@@ -11,6 +11,7 @@
 #include <eve/module/complex/regular/acosh.hpp>
 #include <eve/module/complex/regular/asin.hpp>
 #include <eve/module/complex/regular/asinh.hpp>
+#include <eve/module/complex/regular/atan.hpp>
 #include <eve/module/complex/regular/atanh.hpp>
 #include <eve/module/complex/regular/cmplx.hpp>
 #include <eve/module/complex/regular/traits.hpp>
