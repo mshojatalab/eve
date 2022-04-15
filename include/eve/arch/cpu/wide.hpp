@@ -170,7 +170,7 @@ namespace eve
     template<typename S0, typename... Ss>
     explicit EVE_FORCEINLINE wide(S0 const& v0,Ss const&... vs) noexcept
 #if !defined(EVE_DOXYGEN_INVOKED)
-    requires kumi::at_least_sized_product_type<Type,sizeof...(Ss) + 1>
+    requires kumi::sized_product_type_or_more<Type,sizeof...(Ss) + 1>
 #endif
     : storage_base( [&]<std::size_t... X>( std::index_sequence<X...>)
                     {
