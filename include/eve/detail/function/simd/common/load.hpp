@@ -216,7 +216,7 @@ namespace eve::detail
   // Bundle
   //================================================================================================
   template<typename T, typename N, relative_conditional_expr C, typename ... Ptrs>
-  EVE_FORCEINLINE wide<T, N> load_( EVE_SUPPORTS(cpu_), C const& c, safe_type const&
+  EVE_FORCEINLINE wide<T, N> load_( EVE_SUPPORTS(cpu_), C const& c, decorator auto const& mode
                                   , eve::as<wide<T, N>> const &, soa_ptr<Ptrs...> ptr
                                   ) noexcept
   requires(std::same_as<abi_t<T, N>, bundle_>)
@@ -226,14 +226,14 @@ namespace eve::detail
     {
       kumi::for_each( [=]<typename M>(M& m, auto part_alt, auto p) {
             auto new_c = c.map_alternative([&](auto) { return part_alt; });
-            m = load(new_c,safe,as<M>{},p);
+            m = load(new_c,mode,as<M>{},p);
           }
           , that.storage(), c.alternative, ptr
           );
     }
     else
     {
-      kumi::for_each( [=]<typename M>(M& m, auto p) { m = load(c,safe,as<M>{},p); }
+      kumi::for_each( [=]<typename M>(M& m, auto p) { m = load(c,mode,as<M>{},p); }
                      , that.storage(), ptr
                      );
     }
